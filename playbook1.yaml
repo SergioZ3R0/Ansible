@@ -1,0 +1,9 @@
+- name: El meu primer script
+  hosts: hosts
+  become: true
+  tasks:
+  - name: Ping my Hosts
+    ansible.builtin.ping
+  - name: Print message
+    ansible.builtin.debug
+    msg: Hello World
