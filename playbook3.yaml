@@ -1,3 +1,4 @@
+#usage: ansible-playbook -i inventory.ini playbook3.yaml --ask-become-pass
 - name: iotop i glances
   hosts: hosts
   become: true
