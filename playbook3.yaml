@@ -2,4 +2,14 @@
   hosts: hosts
   become: true
   tasks:
-        - name:
+     - name: Install iotop
+       apt:
+        name: iotop
+        state: present
+
+     - name: Install glances
+       apt:
+        name: glances
+        state: present
+        autoremove: yes
+        autoclean: yes
