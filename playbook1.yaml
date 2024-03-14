@@ -1,3 +1,4 @@
+#usage:
 - name: El meu primer script
   hosts: hosts
   become: true
