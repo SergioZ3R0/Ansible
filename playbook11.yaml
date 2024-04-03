@@ -1,0 +1,17 @@
+- name: Instalar y Activar mysql
+  hosts: db
+  become: true
+  tasks:
+    - name: Activar mysql
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Crontab
+      cron:
+        name: "Backup MySQL"
+        special_time: "hourly"
+        user: root
+        job: "./backup-mysql.sh"
+        state: present

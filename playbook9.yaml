@@ -1,0 +1,14 @@
+- name: Instalar y Activar mysql
+  hosts: db
+  become: yes
+  tasks:
+    - name: Instalar mysql si no está instalado
+      apt:
+        name: mysql-server
+        state: present
+
+    - name: Activar mysql
+      service:
+        name: mysql
+        state: started
+        enabled: yes

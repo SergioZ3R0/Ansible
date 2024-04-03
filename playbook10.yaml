@@ -1,0 +1,11 @@
+- name: Ping Echo
+  hosts: all
+  become: false
+  tasks:
+    - name: Obtenir  el uptime de totes les màquines
+      shell: uptime
+      register: uptime_output
+    - name: Mostrar el uptime
+      debug:
+        msg: "{{ inventory_hostname }} - Uptime: {{ uptime_output.stdout }}"
+

@@ -1,0 +1,12 @@
+#usage: ansible-playbook -i inventory.ini playbook5.yaml --ask-become-pass
+- name: Distribuir clau SSH user isard
+  hosts: all
+  become: true
+  vars_files:
+    - vars/default.yaml
+  tasks:
+  - name: copiar clau SSH al node  remot
+    ansible.posix.authorized_key:
+        user: "{{ created_username }}"
+        state: present
+        key: "{{ copy_local_key }}"

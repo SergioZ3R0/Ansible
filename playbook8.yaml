@@ -1,0 +1,14 @@
+- name: Activar apache2
+  hosts: www
+  become: yes
+  tasks:
+    - name: Instalar apache2 si no está instalado
+      apt:
+        name: apache2
+        state: present
+
+    - name: Activar apache2
+      service:
+        name: apache2
+        state: started
+        enabled: yes

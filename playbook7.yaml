@@ -1,0 +1,19 @@
+#usage: ansible-playbook -i inventory.ini playbook7.yaml --ask-become-pass
+- name: Activar firewall UFW y abrir puerto SSH
+  hosts: all
+  become: yes
+  tasks:
+    - name: Instalar UFW si no está instalado
+      apt:
+        name: ufw
+        state: present
+
+    - name: Habilitar el firewall UFW
+      ufw:
+        state: enabled
+
+    - name: Abrir puerto SSH (puerto 22)
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp

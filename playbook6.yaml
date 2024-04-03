@@ -1,0 +1,16 @@
+#usage: ansible-playbook -i inventory.ini playbook6.yaml --ask-become-pass
+- name: Actualizar paquetes del sistema e instalar paquetes básicos
+  hosts: all
+  become: true
+  vars_files:
+    - vars/default.yaml
+  tasks:
+    - name: Actualizar paquetes del sistema
+      apt:
+        update_cache: yes
+
+    - name: Instalar paquetes básicos
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ paquets }}"
