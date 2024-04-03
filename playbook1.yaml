@@ -1,10 +1,10 @@
-#usage:
-- name: El meu primer script
-  hosts: hosts
-  become: true
+- name: Ping Echo
+  hosts: all
+  become: false
   tasks:
-  - name: Ping my Hosts
-    ansible.builtin.ping
-  - name: Print message
-    ansible.builtin.debug
-    msg: Hello World
+   - name: Ping my hosts
+     ansible.builtin.ping:
+
+   - name: Print message
+     ansible.builtin.debug:
+      msg: Hello world

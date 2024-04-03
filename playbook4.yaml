@@ -1,0 +1,19 @@
+#usage ansible-playbook -i inventory.ini playbook4.yaml --ask-become-pass
+- name: Configuración de usuarios con Ansible
+  hosts: all
+  become: yes
+  tasks:
+    - name: Crear usuario ansible
+      user:
+        name: ansible
+        state: present
+        createhome: yes
+        shell: /bin/bash
+
+    - name: Añadir usuario ansible al grupo sudoers sin contraseña
+      lineinfile:
+        dest: /etc/sudoers
+        line: 'ansible ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+        state: present
+        regexp: '^ansible'
