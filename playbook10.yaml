@@ -1,4 +1,4 @@
-#usage ansible-playbook -i inventory.ini playbook10.yaml --ask-become-pass
+#usage ansible-playbook -i inventory.ini playbook10.yaml
 - name: Ping Echo
   hosts: all
   become: false
