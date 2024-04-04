@@ -1,3 +1,4 @@
+#usage ansible-playbook -i inventory.ini playbook9.yaml --ask-become-pass
 - name: Instalar y Activar mysql
   hosts: db
   become: yes
