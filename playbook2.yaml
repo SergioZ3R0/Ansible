@@ -1,4 +1,4 @@
-#usage ansible-playbook -i inventory.ini playbook1.yaml --ask-become-pass
+#usage ansible-playbook -i inventory.ini playbook2.yaml --ask-become-pass
 - name: update i upgrade
   hosts: all
   become: true
