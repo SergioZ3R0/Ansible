@@ -1,6 +1,6 @@
 #usage: ansible-playbook -i inventory.ini playbook3.yaml --ask-become-pass
 - name: iotop i glances
-  hosts: hosts
+  hosts: all
   become: true
   tasks:
      - name: Install iotop
