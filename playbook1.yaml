@@ -1,3 +1,4 @@
+# usage ansible-playbook -i inventory.ini playbook1.yaml
 - name: Ping Echo
   hosts: all
   become: false
