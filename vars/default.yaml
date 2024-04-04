@@ -3,3 +3,4 @@
 created_username: isard
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 paquets: [ 'curl', 'glances', 'git', 'ufw']
+backupSC: "isard@localhost:../backup-mysql.sh"
