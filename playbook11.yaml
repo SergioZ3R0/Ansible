@@ -2,6 +2,8 @@
 - name: Instalar y Activar mysql
   hosts: db
   become: true
+#  vars_files:
+#    - vars/default.yaml
   tasks:
     - name: Activar mysql
       service:
@@ -9,10 +11,34 @@
         state: started
         enabled: yes
 
+    - name: Instalar mysql-python
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: install mysqlpy
+      pip:
+        name: pymysql
+        state: present
+
+    - name: Copy file with owner and permissions
+      copy:
+        src: ./backup-mysql.sh
+        dest: $HOME/
+        owner: isard
+        group: isard
+        mode: '0777'
+
+    - name: Crear base de datos
+      mysql_db:
+        name:
+          - main
+        state: present
+
     - name: Crontab
       cron:
         name: "Backup MySQL"
         special_time: "hourly"
         user: root
-        job: "./backup-mysql.sh"
+        job: "$HOME/backup-mysql.sh"
         state: present
