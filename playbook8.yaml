@@ -1,3 +1,4 @@
+#usage ansible-playbook -i inventory.ini playbook8.yaml --ask-become-pass
 - name: Activar apache2
   hosts: www
   become: yes
