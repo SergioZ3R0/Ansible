@@ -1,0 +1,4 @@
+# vars file for install
+install_mysql: true
+install_nmap: true
+install_apache2: true

@@ -1,0 +1,6 @@
+- hosts: www
+  become: true
+  tasks:
+    - name: Include common/tasks/ping
+      include_role:
+        name: common
