@@ -4,9 +4,11 @@
 - name: Instalar Apache2
   apt:
     name: apache2
-    state: "{{ 'present' if apache2_install|default(true) else 'absent' }}"
+    state: absent
+  when: apache2_install|default(false) | bool
 
 - name: Instalar MySQL
   apt:
     name: mysql-server
-    state: "{{ 'present' if mysql_install|default(true) else 'absent' }}"
+    state: absent
+  when: mysql_install|default(false) | bool

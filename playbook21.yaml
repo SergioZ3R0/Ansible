@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: www
   become: true
   tasks:
     - name: Instalar Apache2 usando el rol 'install'
@@ -7,4 +7,4 @@
         tasks_from: main.yml
       vars:
         apache2_install: true
-        mysql_install: false
+        mysql_install: true
