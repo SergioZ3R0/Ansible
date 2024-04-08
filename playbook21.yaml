@@ -1,6 +1,10 @@
-- hosts: db
+- hosts: all
   become: true
-  roles:
-    - role: install
+  tasks:
+    - name: Instalar Apache2 usando el rol 'install'
+      include_role:
+        name: install
+        tasks_from: main.yml
       vars:
-        install_nmap: true
+        apache2_install: true
+        mysql_install: false

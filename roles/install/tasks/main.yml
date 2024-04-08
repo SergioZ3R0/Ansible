@@ -1,27 +1,12 @@
-- name: Instalar paquetes
-  apt:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - mysql-server
-    - nmap
-    - apache2
-  when: install_mysql or install_nmap or install_apache2
-
-- name: Instalar MySQL
-  apt:
-    name: userinfo
-    state: present
-  when: install_mysql | bool
-
-- name: Instalar Nmap
-  apt:
-    name: tree
-    state: present
-  when: install_nmap | bool
+- name: Cargar variables
+  include_vars: ../vars/main.yml
 
 - name: Instalar Apache2
   apt:
     name: apache2
-    state: present
-  when: install_apache2 | bool
+    state: "{{ 'present' if apache2_install|default(true) else 'absent' }}"
+
+- name: Instalar MySQL
+  apt:
+    name: mysql-server
+    state: "{{ 'present' if mysql_install|default(true) else 'absent' }}"
