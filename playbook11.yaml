@@ -29,11 +29,11 @@
         group: isard
         mode: '0777'
 
-    - name: Crear base de datos
-      mysql_db:
-        name:
-          - main
-        state: present
+#    - name: Crear base de datos
+#      mysql_db:
+#        name:
+#          - main
+#        state: present
 
     - name: Crontab
       cron:
