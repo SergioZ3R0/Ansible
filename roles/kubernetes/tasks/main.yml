@@ -1,2 +1,26 @@
 ---
 # tasks file for kubernetes
+---
+- name: "Configuración de Kubernetes"
+  hosts: all
+  become: yes
+  tasks:
+    - name: "Instalar kubectl"
+      apt:
+        name: kubectl
+        state: present
+        update_cache: yes
+
+    - name: "Configurar kubectl"
+      copy:
+        src: /path/to/kubeconfig
+        dest: ~/.kube/config
+        mode: '0600'
+
+    - name: "Crear namespace"
+      command: kubectl create namespace {{ namespace }}
+      args:
+        creates: /tmp/{{ namespace }}.namespace
+
+    - name: "Desplegar aplicación"
+      command: kubectl apply -f /path/to/deployment.yaml -n {{ namespace }}
