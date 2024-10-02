@@ -1,2 +1,35 @@
 ---
-# tasks file for cloud
+# tasks file for aws
+---
+- name: "Gestión de Recursos en la Nube"
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: "Instalar AWS CLI"
+      pip:
+        name: awscli
+        state: present
+
+    - name: "Crear instancia EC2"
+      ec2:
+        key_name: "{{ ec2_key_name }}"
+        instance_type: "{{ ec2_instance_type }}"
+        image: "{{ ec2_image }}"
+        wait: yes
+        region: "{{ ec2_region }}"
+        group: "{{ ec2_security_group }}"
+        count: 1
+      register: ec2
+
+    - name: "Crear VPC"
+      ec2_vpc_net:
+        name: "{{ vpc_name }}"
+        cidr_block: "{{ vpc_cidr }}"
+        region: "{{ ec2_region }}"
+      register: vpc
+
+    - name: "Configurar almacenamiento S3"
+      aws_s3:
+        bucket: "{{ s3_bucket_name }}"
+        mode: create
+        region: "{{ ec2_region }}"
