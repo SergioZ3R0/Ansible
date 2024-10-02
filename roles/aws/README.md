@@ -23,9 +23,21 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+
+    - name: Aplicar rol de gestión de recursos en la nube
+      hosts: localhost
+      become: yes
       roles:
-         - { role: username.rolename, x: 42 }
+        - role: gestion_recursos_nube
+      vars:
+        ec2_key_name: "mi_clave_ec2"
+        ec2_instance_type: "t2.micro"
+        ec2_image: "ami-0abcdef1234567890"
+        ec2_region: "us-west-2"
+        ec2_security_group: "mi_grupo_seguridad"
+        vpc_name: "mi_vpc"
+        vpc_cidr: "10.0.0.0/16"
+        s3_bucket_name: "mi_bucket_s3"
 
 License
 -------
