@@ -4,5 +4,4 @@ firewall_allow_ports: []
 firewall_deny_ports: []
 firewall_redirect_ports: []
 firewall_allow_ips: []
-firewall_deny_ips: []---
-# vars file for firewall
+firewall_deny_ips: []
