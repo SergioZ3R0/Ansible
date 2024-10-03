@@ -1,6 +1,5 @@
 ---
 # tasks file for firewall
-# main para el modulo task del rol firewall usando iptables
 - name: "Firewall"
   hosts: all
   become: yes
@@ -10,11 +9,42 @@
         name: iptables
         state: present
 
-    - name: "Configurando iptables"
+    - name: "Permitir conexiones a los puertos especificados"
       iptables:
         chain: INPUT
-        in_interface: eth0
         protocol: tcp
-        source: 0.0.0.0/0
-        destination_port: 22
+        destination_port: "{{ item }}"
         jump: ACCEPT
+      loop: "{{ firewall_allow_ports }}"
+
+    - name: "Denegar conexiones a los puertos especificados"
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ item }}"
+        jump: REJECT
+      loop: "{{ firewall_deny_ports }}"
+
+    - name: "Redirigir puertos especificados"
+      iptables:
+        chain: PREROUTING
+        table: nat
+        protocol: tcp
+        destination_port: "{{ item.src }}"
+        jump: REDIRECT
+        to_ports: "{{ item.dest }}"
+      loop: "{{ firewall_redirect_ports }}"
+
+    - name: "Permitir conexiones desde las IPs especificadas"
+      iptables:
+        chain: INPUT
+        source: "{{ item }}"
+        jump: ACCEPT
+      loop: "{{ firewall_allow_ips }}"
+
+    - name: "Denegar conexiones desde las IPs especificadas"
+      iptables:
+        chain: INPUT
+        source: "{{ item }}"
+        jump: REJECT
+      loop: "{{ firewall_deny_ips }}"
