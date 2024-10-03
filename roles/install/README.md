@@ -25,16 +25,22 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: www
-          become: true
-          tasks:
-            - name: Instalar Apache2 usando el rol 'install'
-              include_role:
-                name: install
-                tasks_from: main.yml
-              vars:
-                apache2_install: true
-                mysql_install: true
+    ----
+    - name: Aplicar rol de instalación de software
+      hosts: all
+      become: yes
+      vars:
+        apt_packages:
+          - git
+          - curl
+        yum_packages:
+          - git
+          - curl
+        pip_packages:
+          - boto3
+          - requests
+      roles:
+        - role: instalacion_software
 
 
 License
