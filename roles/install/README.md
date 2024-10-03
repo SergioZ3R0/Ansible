@@ -40,8 +40,7 @@ Including an example of how to use your role (for instance, with variables passe
           - boto3
           - requests
       roles:
-        - role: instalacion_software
-
+        - role: install
 
 License
 -------
