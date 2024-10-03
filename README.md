@@ -28,10 +28,10 @@ This Ansible project is designed to [describe the purpose of the project, e.g., 
     ```
 
 ## Usage
-1. Edit the `inventory/hosts` file to define your hosts.
+1. Edit the `inventory.ini` file to define your hosts.
 2. Run the main playbook:
     ```bash
-    ansible-playbook playbooks/site.yml -i inventory/hosts
+    ansible-playbook playbooks/example.yml -i inventory.ini
     ```
 
 ## Contributing
