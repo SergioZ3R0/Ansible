@@ -1,45 +1,45 @@
-# Proyecto de Ansible
+# Ansible Project
 
-## Descripción
-Este proyecto de Ansible está diseñado para [describir el propósito del proyecto, por ejemplo, automatizar la configuración de servidores web].
+## Description
+This Ansible project is designed to [describe the purpose of the project, e.g., automate the configuration of web servers].
 
-## Estructura del Proyecto
-- `ansible.cfg`: Archivo de configuración de Ansible.
-- `inventory/hosts`: Archivo de inventario que define los hosts y grupos de hosts.
-- `playbooks/`: Directorio que contiene los playbooks de Ansible.
-  - `site.yml`: Playbook principal.
-  - `other_playbook.yml`: Otro playbook de ejemplo.
-- `roles/`: Directorio que contiene los roles de Ansible.
-  - `role1/`: Primer rol.
-  - `role2/`: Segundo rol.
+## Project Structure
+- `playbooks/`: Directory containing Ansible playbooks.
+  - `example.yml`: playbook.
+- `roles/`: Directory containing Ansible roles.
+  - `aws/`: Role to manage AWS resources.
+  - `install/`: Role to install necessary software packages.
+  - `firewall/`: Role to configure firewall rules.
+  - `kubernetes/`: Role to set up and manage Kubernetes clusters.
+  - `mysql/`: Role to set up and configure MySQL databases.
 
-## Requisitos
-- Ansible 2.9 o superior.
-- Acceso SSH a los servidores que se van a gestionar.
+## Requirements
+- Ansible 2.9 or higher.
+- SSH access to the servers to be managed.
 
-## Instalación
-1. Clona el repositorio:
+## Installation
+1. Clone the repository:
     ```bash
-    git clone https://github.com/SergioITB/tu-repo.git
+    git clone https://github.com/SergioITB/your-repo.git
     ```
-2. Navega al directorio del proyecto:
+2. Navigate to the project directory:
     ```bash
-    cd tu-repo
+    cd your-repo
     ```
 
-## Uso
-1. Edita el archivo `inventory/hosts` para definir tus hosts.
-2. Ejecuta el playbook principal:
+## Usage
+1. Edit the `inventory/hosts` file to define your hosts.
+2. Run the main playbook:
     ```bash
     ansible-playbook playbooks/site.yml -i inventory/hosts
     ```
 
-## Contribuir
-1. Haz un fork del repositorio.
-2. Crea una nueva rama (`git checkout -b feature-branch`).
-3. Realiza tus cambios (`git commit -am 'Añadir nueva característica'`).
-4. Sube los cambios a la rama (`git push origin feature-branch`).
-5. Crea un nuevo Pull Request.
+## Contributing
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Commit your changes (`git commit -am 'Add new feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Create a new Pull Request.
 
-## Licencia
-Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo `LICENSE` para más detalles.
+## License
+This project is licensed under the MIT License - see the `LICENSE` file for details.
