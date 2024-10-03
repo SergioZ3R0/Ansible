@@ -21,11 +21,21 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    - name: Configure firewall rules using the firewall role
+      hosts: all
+      become: yes
       roles:
-         - { role: username.rolename, x: 42 }
+        - role: firewall
+          firewall_allow_ports:
+            - 22
+          firewall_deny_ports:
+            - 80
+          firewall_redirect_ports:
+            - { src: 8080, dest: 80 }
+          firewall_allow_ips:
+            - 192.168.1.1
+          firewall_deny_ips:
+            - 10.0.0.1
 
 License
 -------
