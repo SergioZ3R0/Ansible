@@ -1,14 +1,35 @@
-- name: Cargar variables
-  include_vars: ../vars/main.yml
+---
+- name: "Instalación de Software"
+  hosts: all
+  become: yes
+  tasks:
+    - name: "Actualizar lista de paquetes (apt)"
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
 
-- name: Instalar Apache2
-  apt:
-    name: apache2
-    state: absent
-  when: apache2_install|default(false) | bool
+    - name: "Instalar paquetes (apt)"
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ apt_packages }}"
+      when: ansible_os_family == "Debian"
 
-- name: Instalar MySQL
-  apt:
-    name: mysql-server
-    state: absent
-  when: mysql_install|default(false) | bool
+    - name: "Actualizar lista de paquetes (yum)"
+      yum:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: "Instalar paquetes (yum)"
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ yum_packages }}"
+      when: ansible_os_family == "RedHat"
+
+    - name: "Instalar paquetes con pip"
+      pip:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ pip_packages }}"
