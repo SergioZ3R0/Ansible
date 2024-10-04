@@ -11,7 +11,8 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 Role Variables
 --------------
 
-    - firewall_allow_ports: []
+    - 
+      firewall_allow_ports: []
       firewall_deny_ports: []
       firewall_redirect_ports: []
       firewall_allow_ips: []
