@@ -22,10 +22,25 @@ Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    
+    - name: Automatizar despliegue en OpenNebula
+      hosts: opennebula_servers
+      become: yes
       roles:
-         - { role: username.rolename, x: 42 }
+        - role: openNebula
+          opennebula_vm_template: '/path/to/vm/template'
+          opennebula_vm_id: 'vm_id'
+          opennebula_vnet_template: '/path/to/vnet/template'
+          opennebula_datastore_template: '/path/to/datastore/template'
+    
+    - name: Configurar monitorización y escalabilidad en OpenNebula
+      hosts: opennebula_servers
+      become: yes
+      roles:
+        - role: openNebula
+          opennebula_vm_id: 'vm_id'
+          opennebula_cpu: '4'
+          opennebula_memory: '8192'
 
 License
 -------
