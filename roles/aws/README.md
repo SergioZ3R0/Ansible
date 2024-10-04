@@ -10,8 +10,15 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 
 Role Variables
 --------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+    ----
+    ec2_key_name: "mi_clave_ec2"
+    ec2_instance_type: "t2.micro"
+    ec2_image: "ami-0abcdef1234567890"
+    ec2_region: "us-west-2"
+    ec2_security_group: "mi_grupo_seguridad"
+    vpc_name: "mi_vpc"
+    vpc_cidr: "10.0.0.0/16"
+    s3_bucket_name: "mi_bucket_s3"
 
 Dependencies
 ------------
