@@ -1,0 +1,14 @@
+---
+# handlers file for openNebula
+
+- name: Restart Prometheus
+  systemd:
+    name: prometheus
+    state: restarted
+  become: yes
+
+- name: Restart Grafana
+  systemd:
+    name: grafana-server
+    state: restarted
+  become: yes

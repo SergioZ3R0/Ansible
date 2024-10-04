@@ -1,0 +1,19 @@
+---
+- name: Automatizar despliegue en OpenNebula
+  hosts: opennebula_servers
+  become: yes
+  roles:
+    - role: openNebula
+      opennebula_vm_template: '/path/to/vm/template'
+      opennebula_vm_id: 'vm_id'
+      opennebula_vnet_template: '/path/to/vnet/template'
+      opennebula_datastore_template: '/path/to/datastore/template'
+
+- name: Configurar monitorización y escalabilidad en OpenNebula
+  hosts: opennebula_servers
+  become: yes
+  roles:
+    - role: openNebula
+      opennebula_vm_id: 'vm_id'
+      opennebula_cpu: '4'
+      opennebula_memory: '8192'

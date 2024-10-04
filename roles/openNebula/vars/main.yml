@@ -1,0 +1,8 @@
+---
+# vars file for openNebula
+opennebula_vm_template: ''
+opennebula_vm_id: ''
+opennebula_vnet_template: ''
+opennebula_datastore_template: ''
+opennebula_cpu: ''
+opennebula_memory: ''
