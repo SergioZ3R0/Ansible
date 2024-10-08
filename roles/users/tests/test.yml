@@ -1,0 +1,12 @@
+# playbooks/example_user_group.yaml
+- name: Example user-group role
+  hosts: all
+  become: true
+  vars:
+    users:
+      - username: user1
+        password: password1
+      - username: user2
+        password: password2
+  roles:
+    - role: user-group

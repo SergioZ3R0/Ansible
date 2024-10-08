@@ -1,0 +1,23 @@
+---
+# tasks file for users
+- name: Crear usuario X
+  user:
+    name: "{{ item.username }}"
+    state: present
+    createhome: yes
+    creategroup: yes
+    shell: /bin/bash
+  loop: "{{ users }}"
+
+- name: Establecer contraseña para el usuario X
+  shell: echo "{{ item.username }}:{{item.password}}" | chpasswd
+  loop: "{{ users }}"
+
+- name: Añadir usuario X al grupo sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    line: '{{ item.username }} ALL=(ALL) ALL'
+    validate: 'visudo -cf %s'
+    state: present
+    regexp: '^{{ item.username }}'
+  loop: "{{ users }}"
