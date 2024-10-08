@@ -1,0 +1,31 @@
+---
+# vars file for monitoring
+install_elasticsearch: true
+install_grafana: true
+install_influxdb: true
+install_prometheus: true
+install_icinga2: true
+install_loki: true
+
+elasticsearch_config:
+  cluster_name: "my-cluster"
+  node_name: "node-1"
+
+grafana_config:
+  admin_user: "admin"
+  admin_password: "admin"
+
+influxdb_config:
+  bind_address: "127.0.0.1:8086"
+
+prometheus_config:
+  global:
+    scrape_interval: "15s"
+
+icinga2_config:
+  zones:
+    - name: "master"
+      endpoints: ["master1", "master2"]
+
+loki_config:
+  # Add any Loki-specific configuration variables here

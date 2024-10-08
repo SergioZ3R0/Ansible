@@ -1,0 +1,25 @@
+---
+# tasks file for monitoring
+- name: Include Elasticsearch tasks
+  include_tasks: elasticsearch.yml
+  when: install_elasticsearch
+
+- name: Include Grafana tasks
+  include_tasks: grafana.yml
+  when: install_grafana
+
+- name: Include InfluxDB tasks
+  include_tasks: influxdb.yml
+  when: install_influxdb
+
+- name: Include Prometheus tasks
+  include_tasks: prometheus.yml
+  when: install_prometheus
+
+- name: Include Icinga2 tasks
+  include_tasks: icinga2.yml
+  when: install_icinga2
+
+- name: Include Loki tasks
+  include_tasks: loki.yml
+  when: install_loki

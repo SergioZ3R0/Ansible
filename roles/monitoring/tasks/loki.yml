@@ -1,0 +1,16 @@
+- name: Install Loki
+  apt:
+    name: loki
+    state: present
+
+- name: Configure Loki
+  template:
+    src: loki.yml.j2
+    dest: /etc/loki/loki.yml
+  notify: restart loki
+
+- name: Ensure Loki is running
+  service:
+    name: loki
+    state: started
+    enabled: true
