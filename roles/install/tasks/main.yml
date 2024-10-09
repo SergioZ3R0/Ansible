@@ -33,3 +33,17 @@
         name: "{{ item }}"
         state: present
       loop: "{{ pip_packages }}"
+
+    - name: "Configurar servicios"
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      notify: "restart {{ item.name }}"
+      loop: "{{ services }}"
+
+    - name: "Asegurar que los servicios están en ejecución y habilitados"
+      service:
+        name: "{{ item.name }}"
+        state: started
+        enabled: "{{ item.enabled }}"
+      loop: "{{ services }}"

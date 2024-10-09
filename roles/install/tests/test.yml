@@ -1,5 +1,20 @@
 ---
-- hosts: localhost
-  remote_user: root
+- name: Aplicar rol de instalación de software
+  hosts: all
+  become: yes
+  vars:
+    apt_packages:
+      - git
+      - curl
+    yum_packages:
+      - git
+      - curl
+    pip_packages:
+      - boto3
+      - requests
+    services:
+      - { name: 'kea-dhcp4', src: 'kea-dhcp4.conf.j2', dest: '/etc/kea/kea-dhcp4.conf', enabled: true }
+      - { name: 'bind9', src: 'named.conf.options.j2', dest: '/etc/bind/named.conf.options', enabled: true }
+      - { name: 'tftpd-hpa', src: 'tftpd-hpa.j2', dest: '/etc/default/tftpd-hpa', enabled: true }
   roles:
-    - install
+    - role: install

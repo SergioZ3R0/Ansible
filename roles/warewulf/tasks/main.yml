@@ -1,15 +1,5 @@
 ---
 # tasks file for warewulf
-- name: Install Warewulf
-  package:
-    name: warewulf-provision
-    state: present
-
-- name: Get Warewulf route
-  shell: path="find / -type f -name warewulf.conf"
-
-- name: Configure Warewolf
-  template:
-    name: warewulf.yaml.j2
-    copy: src=warewolf.yaml.j2 dst=$path
-
+- name: Include install role
+  include_role:
+    name: install

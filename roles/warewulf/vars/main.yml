@@ -1,2 +1,12 @@
 ---
 # vars file for warewulf
+---
+kea_interfaces: "enp2s0"
+subnet1: "192.168.1.0/24"
+pool1: "192.168.1.100 - 192.168.1.200"
+router1: "192.168.1.1"
+subnet2: "172.16.1.0/24"
+pool2: "172.16.1.10 - 172.16.1.100"
+router2: "172.16.1.1"
+dns_servers: "192.168.1.2, 192.168.1.3"
+domain_name: "grup1.itb.cat"
