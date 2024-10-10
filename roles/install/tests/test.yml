@@ -13,7 +13,7 @@
       - boto3
       - requests
     services:
-      - { name: 'kea-dhcp4', src: 'kea-dhcp4.conf.j2', dest: '/etc/kea/kea-dhcp4.conf', enabled: true }
+      - { name: 'kea-dhcp4', src: 'kea-dhcp4.conf.j2.j2', dest: '/etc/kea/kea-dhcp4.conf.j2', enabled: true }
       - { name: 'bind9', src: 'named.conf.options.j2', dest: '/etc/bind/named.conf.options', enabled: true }
       - { name: 'tftpd-hpa', src: 'tftpd-hpa.j2', dest: '/etc/default/tftpd-hpa', enabled: true }
   roles:

@@ -1,49 +1,48 @@
 ---
-- name: "Instalación de Software"
-  hosts: all
-  become: yes
-  tasks:
-    - name: "Actualizar lista de paquetes (apt)"
-      apt:
-        update_cache: yes
-      when: ansible_os_family == "Debian"
+- name: "Actualizar lista de paquetes (apt)"
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
 
-    - name: "Instalar paquetes (apt)"
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ apt_packages }}"
-      when: ansible_os_family == "Debian"
+- name: "Instalar paquetes (apt)"
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ apt_packages }}"
+  when: ansible_os_family == "Debian"
 
-    - name: "Actualizar lista de paquetes (yum)"
-      yum:
-        name: "*"
-        state: latest
-      when: ansible_os_family == "RedHat"
+- name: "Actualizar lista de paquetes (yum)"
+  yum:
+    name: "*"
+    state: latest
+  when: ansible_os_family == "RedHat"
 
-    - name: "Instalar paquetes (yum)"
-      yum:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ yum_packages }}"
-      when: ansible_os_family == "RedHat"
+- name: "Instalar paquetes (yum)"
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ yum_packages }}"
+  when: ansible_os_family == "RedHat"
 
-    - name: "Instalar paquetes con pip"
-      pip:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ pip_packages }}"
+- name: "Instalar paquetes con pip"
+  pip:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pip_packages }}"
+  when: pip_packages is defined and pip_packages | length > 0
 
-    - name: "Configurar servicios"
-      template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-      notify: "restart {{ item.name }}"
-      loop: "{{ services }}"
+- name: "Configurar servicios"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  notify: "restart {{ item.name }}"
+  loop: "{{ services }}"
+  when: services is defined and services | length > 0
 
-    - name: "Asegurar que los servicios están en ejecución y habilitados"
-      service:
-        name: "{{ item.name }}"
-        state: started
-        enabled: "{{ item.enabled }}"
-      loop: "{{ services }}"
+- name: "Asegurar que los servicios están en ejecución y habilitados"
+  service:
+    name: "{{ item.name }}"
+    state: started
+    enabled: "{{ item.enabled }}"
+  loop: "{{ services }}"
+  when: services is defined and services | length > 0

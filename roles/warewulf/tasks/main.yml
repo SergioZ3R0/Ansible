@@ -1,5 +1,5 @@
 ---
 # tasks file for warewulf
-- name: Include install role
+- name: "Include install role"
   include_role:
     name: install
