@@ -3,3 +3,18 @@
 - name: "Include install role"
   include_role:
     name: install
+- name: "Include firewall role"
+  include_role:
+    name: firewall
+- name: "Include monitoring role"
+  include_role:
+    name: monitoring
+#INCLUDES
+- name: "Modify /etc/hosts"
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+  when: make_hosts == true

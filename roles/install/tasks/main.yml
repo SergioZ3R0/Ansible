@@ -24,6 +24,13 @@
   loop: "{{ yum_packages }}"
   when: ansible_os_family == "RedHat"
 
+- name: "Instalar paquetes con dnf"
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dnf_packages }}"
+  when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge')
+
 - name: "Instalar paquetes con pip"
   pip:
     name: "{{ item }}"

@@ -9,3 +9,43 @@ pool2: "172.16.1.10 - 172.16.1.100"
 router2: "172.16.1.1"
 dns_servers: "192.168.1.2, 192.168.1.3"
 domain_name: "hpc.test.es"
+#BASIC packages
+basic_packages:
+  - authselect
+  - bash-completion
+  - bind-utils
+  - btop
+  - byobu
+  - bzip2
+  - chrony
+  - clustershell
+  - dmidecode
+  - git
+  - glibc-langpack-en
+  - glibc-langpack-es
+  - htop
+  - iftop
+  - iotop
+  - iperf3
+  - ipmitool
+  - lldpd
+  - lsof
+  - mlocate
+  - mtr
+  - net-tools
+  - nmap
+  - rsync
+  - rsyslog
+  - sshpass
+  - sysstat
+  - tar
+  - traceroute
+  - telnet
+  - texinfo
+  - vim
+  - wget
+  - yum-utils
+  - zip
+  - xorg-x11-xauth
+  - xorg-x11-fonts-*
+  - xorg-x11-utils

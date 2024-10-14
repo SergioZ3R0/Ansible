@@ -5,11 +5,67 @@
   roles:
     - role: warewulf
   vars:
-    yum_packages:
-      - kea-dhcp4-server
-      - bind9
-      - tftpd-hpa
-    services:
-      - { name: 'kea-dhcp4', src: 'kea-dhcp4.conf.j2', dest: '/etc/kea/kea-dhcp4.conf.j2', enabled: true }
-      - { name: 'bind9', src: 'named.conf.options.j2', dest: '/etc/bind/named.conf.options', enabled: true }
-      - { name: 'tftpd-hpa', src: 'tftpd-hpa.j2', dest: '/etc/default/tftpd-hpa', enabled: true }
+  dnf_packages: ""{{ basic_packages }}""
+  services:
+    - name : 'lldpd'
+      enabled: true
+  make_hosts: false
+
+- name: Enable powertools repository
+  command: dnf config-manager --set-enabled powertools
+  when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge')
+
+- name: Install EPEL release
+  command: dnf install -y epel-release
+  when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge')
+
+- name: Enable and start lldpd service
+  systemd:
+    name: lldpd
+    enabled: yes
+    state: started
+  when: ansible_os_family == "RedHat"
+
+- name: Generate RSA key pair
+  ansible.builtin.openssh_keypair:
+    path: /home/{{ ansible_user }}/.ssh/id_rsa
+    type: rsa
+    size: 4096
+  become: false
+  delegate_to: localhost
+
+- name: Stop firewalld service
+  systemd:
+    name: firewalld
+    state: stopped
+
+- name: Disable firewalld service
+  systemd:
+    name: firewalld
+    enabled: no
+
+- name: Flush all iptables rules
+  command: iptables -F
+
+- name: Flush all iptables NAT rules
+  command: iptables -t nat -F
+
+- name: Aplicar rol firewall
+  hosts: rocky
+  become: yes
+  roles:
+    - role: firewall
+  vars:
+    firewall_rules:
+      - table: nat
+        chain: POSTROUTING
+        rule: "-o <external-if> -j MASQUERADE"
+      - table: filter
+        chain: FORWARD
+        rule: "-i <internal-if> -o <external-if> -j ACCEPT"
+      - table: filter
+        chain: FORWARD
+        rule: "-i <internal-if> -o <external-if> -m state --state RELATED,ESTABLISHED -j ACCEPT"
+
+
+
