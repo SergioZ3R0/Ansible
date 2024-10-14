@@ -5,9 +5,73 @@
   roles:
     - role: warewulf
   vars:
-    yum_packages:
-      - kea
-      - bind
-      - tftp-server
+    dnf_packages: "{{ basic_packages }}"
     services:
-      - { name: 'kea-dhcp4', src: 'roles/warewulf/confFiles/kea-dhcp4.conf.j2', dest: '/etc/kea/kea-dhcp4.conf', enabled: true }
+      - name: lldpd
+        enabled: true
+    install_dnf: true
+
+- name: Configurar sistema
+  hosts: rocky
+  become: yes
+  tasks:
+    - name: Enable powertools repository
+      command: dnf config-manager --set-enabled powertools
+      when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge') and install_packages and package_manager == "dnf"
+
+    - name: Install EPEL release
+      command: dnf install -y epel-release
+      when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge') and install_packages and package_manager == "dnf"
+
+    - name: Enable and start lldpd service
+      systemd:
+        name: lldpd
+        enabled: yes
+        state: started
+      when: ansible_os_family == "RedHat" and install_packages
+
+    - name: Generate RSA key pair
+      ansible.builtin.openssh_keypair:
+        path: /home/{{ ansible_user }}/.ssh/id_rsa
+        type: rsa
+        size: 4096
+      become: false
+      delegate_to: localhost
+      when: install_packages
+
+    - name: Stop firewalld service
+      systemd:
+        name: firewalld
+        state: stopped
+      when: install_packages
+
+    - name: Disable firewalld service
+      systemd:
+        name: firewalld
+        enabled: no
+      when: install_packages
+
+    - name: Flush all iptables rules
+      command: iptables -F
+      when: install_packages
+
+    - name: Flush all iptables NAT rules
+      command: iptables -t nat -F
+      when: install_packages
+
+- name: Aplicar rol firewall
+  hosts: rocky
+  become: yes
+  roles:
+    - role: firewall
+  vars:
+    firewall_rules:
+      - table: nat
+        chain: POSTROUTING
+        rule: "-o <external-if> -j MASQUERADE"
+      - table: filter
+        chain: FORWARD
+        rule: "-i <internal-if> -o <external-if> -j ACCEPT"
+      - table: filter
+        chain: FORWARD
+        rule: "-i <internal-if> -o <external-if> -m state --state RELATED,ESTABLISHED -j ACCEPT"

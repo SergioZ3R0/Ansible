@@ -1,3 +1,7 @@
 # vars file for install
 apache2_install: false
 mysql_install: false
+install_yum: false
+install_dnf: false
+install_apt: false
+install_pip: false
