@@ -30,6 +30,7 @@
     state: present
   loop: "{{ dnf_packages }}"
   when: ansible_os_family == "RedHat" and install_dnf == true
+  ignore_errors: yes
 
 - name: "Instalar paquetes con pip"
   pip:
