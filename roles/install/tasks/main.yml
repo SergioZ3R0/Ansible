@@ -29,7 +29,7 @@
     name: "{{ item }}"
     state: present
   loop: "{{ dnf_packages }}"
-  when: ansible_os_family == "RedHat" and ansible_distribution_version is version('8', '>=') and install_dnf == true
+  when: ansible_os_family == "RedHat" and install_dnf == true
 
 - name: "Instalar paquetes con pip"
   pip:

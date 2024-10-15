@@ -3,12 +3,15 @@
 - name: "Include install role"
   include_role:
     name: install
+  when : install_warewulf == true
 - name: "Include firewall role"
   include_role:
     name: firewall
+  when : firewall_warewulf == true
 - name: "Include monitoring role"
   include_role:
     name: monitoring
+  when : monitoring_warewulf == true
 #INCLUDES
 - name: "Modify /etc/hosts"
   template:
