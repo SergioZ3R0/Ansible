@@ -6,7 +6,7 @@
     - role: warewulf
   vars:
     make_hosts: false
-    firewall_warewulf: false
+    firewall_warewulf: true
     monitoring_warewulf: false
     install_yum: false
     install_dnf: true
@@ -24,11 +24,11 @@
   tasks:
     - name: Enable powertools repository
       command: dnf config-manager --set-enabled powertools
-      when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge') and install_packages and package_manager == "dnf"
+      when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge') and package_manager == "dnf"
 
     - name: Install EPEL release
       command: dnf install -y epel-release
-      when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge') and install_packages and package_manager == "dnf"
+      when: ansible_os_family == "RedHat" and ansible_distribution_version | version_compare('8', 'ge') and package_manager == "dnf"
 
     - name: Enable and start lldpd service
       systemd:
