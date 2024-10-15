@@ -37,15 +37,6 @@
         state: started
       when: ansible_os_family == "RedHat" and install_packages
 
-    - name: Generate RSA key pair
-      ansible.builtin.openssh_keypair:
-        path: /home/{{ ansible_user }}/.ssh/id_rsa
-        type: rsa
-        size: 4096
-      become: false
-      delegate_to: localhost
-      when: install_packages
-
     - name: Stop firewalld service
       systemd:
         name: firewalld

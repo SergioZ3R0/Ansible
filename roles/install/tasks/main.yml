@@ -45,7 +45,7 @@
     dest: "{{ item.dest }}"
   notify: "restart {{ item.name }}"
   loop: "{{ services }}"
-  when: services is defined and services | length > 0
+  when: services is defined and services | length > 0 and configure_services == true
 
 - name: "Asegurar que los servicios están en ejecución y habilitados"
   service:

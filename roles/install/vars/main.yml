@@ -5,3 +5,4 @@ install_yum: false
 install_dnf: true
 install_apt: false
 install_pip: false
+configure_services: false
