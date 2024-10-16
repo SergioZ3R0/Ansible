@@ -7,25 +7,25 @@
 
 - name: "Permitir conexiones a los puertos especificados"
   command: "nft add rule inet filter input tcp dport {{ item }} accept"
-  loop: "{{ firewall_allow_ports }}"
+  loop: "{{ firewall_allow_ports | default([]) }}"
 
 - name: "Denegar conexiones a los puertos especificados"
   command: "nft add rule inet filter input tcp dport {{ item }} reject"
-  loop: "{{ firewall_deny_ports }}"
+  loop: "{{ firewall_deny_ports | default([]) }}"
 
 - name: "Redirigir puertos especificados"
   command: "nft add rule inet nat prerouting tcp dport {{ item.src }} redirect to :{{ item.dest }}"
-  loop: "{{ firewall_redirect_ports }}"
+  loop: "{{ firewall_redirect_ports | default([]) }}"
 
 - name: "Permitir conexiones desde las IPs especificadas"
   command: "nft add rule inet filter input ip saddr {{ item }} accept"
-  loop: "{{ firewall_allow_ips }}"
+  loop: "{{ firewall_allow_ips | default([]) }}"
 
 - name: "Denegar conexiones desde las IPs especificadas"
   command: "nft add rule inet filter input ip saddr {{ item }} reject"
-  loop: "{{ firewall_deny_ips }}"
+  loop: "{{ firewall_deny_ips | default([]) }}"
 
 - name: "Aplicar reglas de firewall personalizadas"
   command: "nft add rule {{ item.table }} {{ item.chain }} {{ item.rule }}"
-  loop: "{{ firewall_rules }}"
+  loop: "{{ firewall_rules | default([]) }}"
   when: firewall_rules is defined
