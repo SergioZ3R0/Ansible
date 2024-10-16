@@ -14,17 +14,17 @@ basic_packages:
   - authselect
   - bash-completion
   - bind-utils
-  - btop
-  - byobu
+ # - btop
+ # - byobu
   - bzip2
   - chrony
-  - clustershell
+ # - clustershell
   - dmidecode
   - git
   - glibc-langpack-en
   - glibc-langpack-es
-  - htop
-  - iftop
+ # - htop
+ # - iftop
   - iotop
   - iperf3
   - ipmitool
@@ -41,7 +41,7 @@ basic_packages:
   - tar
   - traceroute
   - telnet
-  - texinfo
+ # - texinfo
   - vim
   - wget
   - yum-utils

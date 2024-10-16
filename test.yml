@@ -36,25 +36,22 @@
         enabled: yes
         state: started
       when: ansible_os_family == "RedHat"
+
     - name: Stop firewalld service
       systemd:
         name: firewalld
         state: stopped
-      when: install_packages
 
     - name: Disable firewalld service
       systemd:
         name: firewalld
         enabled: no
-      when: install_packages
 
     - name: Flush all iptables rules
       command: iptables -F
-      when: install_packages
 
     - name: Flush all iptables NAT rules
       command: iptables -t nat -F
-      when: install_packages
 
 - name: Aplicar rol firewall
   hosts: rocky
