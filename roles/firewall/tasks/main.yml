@@ -5,27 +5,57 @@
     name: nftables
     state: present
 
+- name: "Crear la tabla de filtro"
+  nftables:
+    table: filter
+    family: inet
+    state: present
+
 - name: "Permitir conexiones a los puertos especificados"
-  command: "nft add rule inet filter input tcp dport {{ item }} accept"
-  loop: "{{ firewall_allow_ports | default([]) }}"
+  nftables:
+    table: filter
+    chain: input
+    rule: "tcp dport {{ item }} accept"
+  loop: "{{ firewall_allow_ports }}"
 
 - name: "Denegar conexiones a los puertos especificados"
-  command: "nft add rule inet filter input tcp dport {{ item }} reject"
-  loop: "{{ firewall_deny_ports | default([]) }}"
+  nftables:
+    table: filter
+    chain: input
+    rule: "tcp dport {{ item }} reject"
+  loop: "{{ firewall_deny_ports }}"
+
+- name: "Crear la tabla de NAT"
+  nftables:
+    table: nat
+    family: inet
+    state: present
 
 - name: "Redirigir puertos especificados"
-  command: "nft add rule inet nat prerouting tcp dport {{ item.src }} redirect to :{{ item.dest }}"
-  loop: "{{ firewall_redirect_ports | default([]) }}"
+  nftables:
+    table: nat
+    chain: prerouting
+    rule: "tcp dport {{ item.src }} redirect to :{{ item.dest }}"
+  loop: "{{ firewall_redirect_ports }}"
 
 - name: "Permitir conexiones desde las IPs especificadas"
-  command: "nft add rule inet filter input ip saddr {{ item }} accept"
-  loop: "{{ firewall_allow_ips | default([]) }}"
+  nftables:
+    table: filter
+    chain: input
+    rule: "ip saddr {{ item }} accept"
+  loop: "{{ firewall_allow_ips }}"
 
 - name: "Denegar conexiones desde las IPs especificadas"
-  command: "nft add rule inet filter input ip saddr {{ item }} reject"
-  loop: "{{ firewall_deny_ips | default([]) }}"
+  nftables:
+    table: filter
+    chain: input
+    rule: "ip saddr {{ item }} reject"
+  loop: "{{ firewall_deny_ips }}"
 
 - name: "Aplicar reglas de firewall personalizadas"
-  command: "nft add rule {{ item.table }} {{ item.chain }} {{ item.rule }}"
-  loop: "{{ firewall_rules | default([]) }}"
+  nftables:
+    table: "{{ item.table }}"
+    chain: "{{ item.chain }}"
+    rule: "{{ item.rule }}"
+  loop: "{{ firewall_rules }}"
   when: firewall_rules is defined
