@@ -62,10 +62,10 @@
     firewall_rules:
       - table: nat
         chain: POSTROUTING
-        rule: "-o <external-if> -j MASQUERADE"
+        rule: "-o enp0s3 -j MASQUERADE"
       - table: filter
         chain: FORWARD
-        rule: "-i <internal-if> -o <external-if> -j ACCEPT"
+        rule: "-i enp0s8 -o enp0s3 -j ACCEPT"
       - table: filter
         chain: FORWARD
-        rule: "-i <internal-if> -o <external-if> -m state --state RELATED,ESTABLISHED -j ACCEPT"
+        rule: "-i enp0s8 -o enp0s3 -m state --state RELATED,ESTABLISHED -j ACCEPT"
