@@ -44,3 +44,8 @@
     source: "{{ item }}"
     jump: REJECT
   loop: "{{ firewall_deny_ips }}"
+
+- name: "Aplicar reglas de firewall personalizadas"
+  command: "iptables -t {{ item.table }} -A {{ item.chain }} {{ item.rule }}"
+  loop: "{{ firewall_rules }}"
+  when: firewall_rules is defined
