@@ -1,51 +1,31 @@
 ---
 # tasks file for firewall
-- name: "Instalando iptables"
+- name: "Instalando nftables"
   package:
-    name: iptables
+    name: nftables
     state: present
 
 - name: "Permitir conexiones a los puertos especificados"
-  iptables:
-    chain: INPUT
-    protocol: tcp
-    destination_port: "{{ item }}"
-    jump: ACCEPT
+  command: "nft add rule inet filter input tcp dport {{ item }} accept"
   loop: "{{ firewall_allow_ports }}"
 
 - name: "Denegar conexiones a los puertos especificados"
-  iptables:
-    chain: INPUT
-    protocol: tcp
-    destination_port: "{{ item }}"
-    jump: REJECT
+  command: "nft add rule inet filter input tcp dport {{ item }} reject"
   loop: "{{ firewall_deny_ports }}"
 
 - name: "Redirigir puertos especificados"
-  iptables:
-    chain: PREROUTING
-    table: nat
-    protocol: tcp
-    destination_port: "{{ item.src }}"
-    jump: REDIRECT
-    to_ports: "{{ item.dest }}"
+  command: "nft add rule inet nat prerouting tcp dport {{ item.src }} redirect to :{{ item.dest }}"
   loop: "{{ firewall_redirect_ports }}"
 
 - name: "Permitir conexiones desde las IPs especificadas"
-  iptables:
-    chain: INPUT
-    source: "{{ item }}"
-    jump: ACCEPT
+  command: "nft add rule inet filter input ip saddr {{ item }} accept"
   loop: "{{ firewall_allow_ips }}"
 
 - name: "Denegar conexiones desde las IPs especificadas"
-  iptables:
-    chain: INPUT
-    source: "{{ item }}"
-    jump: REJECT
+  command: "nft add rule inet filter input ip saddr {{ item }} reject"
   loop: "{{ firewall_deny_ips }}"
 
 - name: "Aplicar reglas de firewall personalizadas"
-  command: "iptables -t {{ item.table }} -A {{ item.chain }} {{ item.rule }}"
+  command: "nft add rule inet {{ item.table }} {{ item.chain }} {{ item.rule }}"
   loop: "{{ firewall_rules }}"
   when: firewall_rules is defined
