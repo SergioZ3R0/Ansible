@@ -9,8 +9,8 @@
   command: "nft add table inet filter"
   ignore_errors: yes
 
-- name: "Crear la cadena de entrada en la tabla de filtro"
-  command: "nft add chain inet filter input { type filter hook input priority 0 \\; }"
+- name: "Crear la cadena de forward en la tabla de filtro"
+  command: "nft add chain inet filter forward { type filter hook forward priority 0 \\; }"
   ignore_errors: yes
 
 - name: "Permitir conexiones a los puertos especificados"
@@ -34,7 +34,15 @@
   ignore_errors: yes
 
 - name: "Aplicar regla de MASQUERADE en postrouting"
-  command: "nft add rule inet nat postrouting oif enp0s3 masquerade"
+  command: "nft add rule inet nat postrouting oifname enp0s3 masquerade"
+  ignore_errors: yes
+
+- name: "Permitir el forward entre interfaces"
+  command: "nft add rule inet filter forward iifname enp0s8 oifname enp0s3 accept"
+  ignore_errors: yes
+
+- name: "Permitir conexiones relacionadas o establecidas"
+  command: "nft add rule inet filter forward iifname enp0s8 oifname enp0s3 ct state related,established accept"
   ignore_errors: yes
 
 - name: "Redirigir puertos especificados"

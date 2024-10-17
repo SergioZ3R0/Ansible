@@ -60,12 +60,12 @@
     - role: firewall
   vars:
     firewall_rules:
-      - table: nat
-        chain: POSTROUTING
-        rule: "-o enp0s3 -j MASQUERADE"
-      - table: filter
-        chain: FORWARD
-        rule: "-i enp0s8 -o enp0s3 -j ACCEPT"
-      - table: filter
-        chain: FORWARD
-        rule: "-i enp0s8 -o enp0s3 -m state --state RELATED,ESTABLISHED -j ACCEPT"
+      - table: inet nat
+        chain: postrouting
+        rule: 'oifname "enp0s3" masquerade'
+      - table: inet filter
+        chain: forward
+        rule: 'iifname "enp0s8" oifname "enp0s3" accept'
+      - table: inet filter
+        chain: forward
+        rule: 'iifname "enp0s8" oifname "enp0s3" ct state related,established accept'
