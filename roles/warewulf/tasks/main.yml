@@ -1,14 +1,12 @@
 ---
 # tasks file for warewulf
-- name: "Include install role"
-  include_role:
-    name: install
-  when: install_warewulf == true
-
-- name: "Include iptables role"
-  include_role:
-    name: iptables
-  when: firewall_warewulf == true
+- name: "Instalar paquetes con dnf"
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dnf_packages }}"
+  when: ansible_os_family == "RedHat" and install_dnf == true
+  ignore_errors: yes
 
 - name: "Include monitoring role"
   include_role:

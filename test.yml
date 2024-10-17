@@ -6,7 +6,6 @@
     - role: warewulf
   vars:
     make_hosts: false
-    firewall_warewulf: true
     monitoring_warewulf: false
     install_yum: false
     install_dnf: true
