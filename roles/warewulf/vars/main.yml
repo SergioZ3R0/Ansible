@@ -54,3 +54,4 @@ basic_packages:
   - python3-clustershell
   - createrepo
   - dnf-utils
+  - httpd

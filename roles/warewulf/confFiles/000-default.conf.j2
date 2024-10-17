@@ -1,0 +1,12 @@
+# Default VirtualHost.
+# DO NOT MODIFY if you don't know the implications of doing it.
+<VirtualHost *:80>
+    ServerName {{ server_name }}
+    ServerAlias {{ server_alias }}
+    AliasMatch ^/install/(.*)$ "/install/$1"
+    <Directory "/install/osupdates">
+        AllowOverride None
+        # Allow open access:
+        Require all granted
+    </Directory>
+</VirtualHost>

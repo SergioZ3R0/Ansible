@@ -124,7 +124,7 @@
 
     - name: Sync repositories
       vars:
-        sync: true
+        sync: false
       block:
         - name: Sync AppStream repository
           command: dnf reposync -n --repoid=appstream --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
@@ -150,3 +150,26 @@
         - name: Rename HA directory to highavailability
           command: mv /install/osupdates/rocky8/x86_64/ha /install/osupdates/rocky8/x86_64/highavailability
       when: sync == true
+
+    - name: Disable user directories web configuration
+      command: mv /etc/httpd/conf.d/userdir.conf{,.disabled}
+      when: ansible_os_family == "RedHat"
+
+    - name: Disable welcome page configuration
+      command: mv /etc/httpd/conf.d/welcome.conf{,.disabled}
+      when: ansible_os_family == "RedHat"
+
+    - name: Configurar VirtualHost por defecto
+      hosts: webservers
+      become: yes
+      vars:
+        server_name: "10.1.0.1"
+        server_alias: "headnode.hpc.domain"
+      tasks:
+        - name: Aplicar plantilla de VirtualHost
+          template:
+            src: templates/000-default.conf.j2
+            dest: /etc/httpd/conf.d/000-default.conf
+            owner: root
+            group: root
+            mode: '0644'
