@@ -50,3 +50,5 @@ basic_packages:
   - xorg-x11-xauth
   - xorg-x11-fonts-*
   - xorg-x11-utils
+  - clustershell
+  - python3-clustershell
