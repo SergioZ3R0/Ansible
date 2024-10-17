@@ -7,10 +7,7 @@
   vars:
     make_hosts: false
     monitoring_warewulf: false
-    install_yum: false
     install_dnf: true
-    install_apt: false
-    install_pip: false
     install_warewulf: true
     dnf_packages: "{{ basic_packages }}"
     services:
