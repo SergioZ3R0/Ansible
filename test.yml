@@ -42,6 +42,7 @@
         - firewalld
         - libvirtd
         - nftables
+      ignore_errors: yes
 
     - name: Flush all iptables rules
       command: iptables -F
