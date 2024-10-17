@@ -5,6 +5,7 @@
   roles:
     - role: warewulf
   vars:
+    make_hosts: true
     monitoring_warewulf: false
     install_dnf: true
     dnf_packages: "{{ basic_packages }}"
