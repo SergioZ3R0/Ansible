@@ -95,3 +95,20 @@
         group: root
         mode: '0644'
       when: ansible_os_family == "RedHat"
+
+    - name: Set timezone to Europe/Madrid
+      command: timedatectl set-timezone Europe/Madrid
+
+    - name: Apply chrony configuration template
+      template:
+        src: ./roles/warewulf/confFiles/chrony.conf.j2
+        dest: /etc/chrony.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable and start chronyd service
+      systemd:
+        name: chronyd
+        enabled: yes
+        state: restarted
