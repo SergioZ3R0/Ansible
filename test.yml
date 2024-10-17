@@ -1,24 +1,23 @@
 ---
-"""
-- name: Aplicar rol de instalación de software
-  hosts: rocky
-  become: yes
-  roles:
-    - role: warewulf
-  vars:
-    make_hosts: false
-    firewall_warewulf: true
-    monitoring_warewulf: false
-    install_yum: false
-    install_dnf: true
-    install_apt: false
-    install_pip: false
-    install_warewulf: true
-    dnf_packages: "{{ basic_packages }}"
-    services:
-      - name: lldpd
-        enabled: true
-"""
+#- name: Aplicar rol de instalación de software
+#  hosts: rocky
+#  become: yes
+#  roles:
+#    - role: warewulf
+#  vars:
+#    make_hosts: false
+#    firewall_warewulf: true
+#    monitoring_warewulf: false
+#    install_yum: false
+#    install_dnf: true
+#    install_apt: false
+#    install_pip: false
+#    install_warewulf: true
+#    dnf_packages: "{{ basic_packages }}"
+#    services:
+#      - name: lldpd
+#        enabled: true
+
 - name: Configurar sistema
   hosts: rocky
   become: yes
