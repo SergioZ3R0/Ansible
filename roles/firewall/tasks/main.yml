@@ -6,54 +6,54 @@
     state: present
 
 - name: "Crear la tabla de filtro"
-  nftables:
+  community.general.nftables:
     table: filter
     family: inet
     state: present
 
 - name: "Permitir conexiones a los puertos especificados"
-  nftables:
+  community.general.nftables:
     table: filter
     chain: input
     rule: "tcp dport {{ item }} accept"
   loop: "{{ firewall_allow_ports }}"
 
 - name: "Denegar conexiones a los puertos especificados"
-  nftables:
+  community.general.nftables:
     table: filter
     chain: input
     rule: "tcp dport {{ item }} reject"
   loop: "{{ firewall_deny_ports }}"
 
 - name: "Crear la tabla de NAT"
-  nftables:
+  community.general.nftables:
     table: nat
     family: inet
     state: present
 
 - name: "Redirigir puertos especificados"
-  nftables:
+  community.general.nftables:
     table: nat
     chain: prerouting
     rule: "tcp dport {{ item.src }} redirect to :{{ item.dest }}"
   loop: "{{ firewall_redirect_ports }}"
 
 - name: "Permitir conexiones desde las IPs especificadas"
-  nftables:
+  community.general.nftables:
     table: filter
     chain: input
     rule: "ip saddr {{ item }} accept"
   loop: "{{ firewall_allow_ips }}"
 
 - name: "Denegar conexiones desde las IPs especificadas"
-  nftables:
+  community.general.nftables:
     table: filter
     chain: input
     rule: "ip saddr {{ item }} reject"
   loop: "{{ firewall_deny_ips }}"
 
 - name: "Aplicar reglas de firewall personalizadas"
-  nftables:
+  community.general.nftables:
     table: "{{ item.table }}"
     chain: "{{ item.chain }}"
     rule: "{{ item.rule }}"
