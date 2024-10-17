@@ -1,17 +1,17 @@
 ---
 # tasks file for warewulf
 - name: "Include install role"
-  import_role:
+  include_role:
     name: install
   when: install_warewulf == true
 
-- name: "Include firewalld role"
-  import_role:
+- name: "Include iptables role"
+  include_role:
     name: iptables
   when: firewall_warewulf == true
 
 - name: "Include monitoring role"
-  import_role:
+  include_role:
     name: monitoring
   when: monitoring_warewulf == true
 
