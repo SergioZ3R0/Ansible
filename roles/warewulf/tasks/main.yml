@@ -4,9 +4,9 @@
   include_role:
     name: install
   when : install_warewulf == true
-- name: "Include firewall role"
+- name: "Include firewalld role"
   include_role:
-    name: firewall
+    name: firewalld
   when : firewall_warewulf == true
 - name: "Include monitoring role"
   include_role:

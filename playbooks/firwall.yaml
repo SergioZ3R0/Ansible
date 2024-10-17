@@ -1,5 +1,5 @@
 #usage: ansible-playbook -i inventory.ini playbook7.yaml --ask-become-pass
-- name: Activar firewall UFW y abrir puerto SSH
+- name: Activar firewalld UFW y abrir puerto SSH
   hosts: all
   become: yes
   tasks:
@@ -8,7 +8,7 @@
         name: ufw
         state: present
 
-    - name: Habilitar el firewall UFW
+    - name: Habilitar el firewalld UFW
       ufw:
         state: enabled
 

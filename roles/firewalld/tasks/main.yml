@@ -1,5 +1,5 @@
 ---
-# tasks file for firewall.
+# tasks file for firewalld.
 - name: "Instalando nftables"
   package:
     name: nftables
@@ -57,7 +57,7 @@
   command: "nft add rule inet filter input ip saddr {{ item }} reject"
   loop: "{{ firewall_deny_ips }}"
 
-- name: "Aplicar reglas de firewall personalizadas"
+- name: "Aplicar reglas de firewalld personalizadas"
   command: "nft add rule {{ item.table }} {{ item.chain }} {{ item.rule }}"
   loop: "{{ firewall_rules }}"
   when: firewall_rules is defined

@@ -1,0 +1,87 @@
+---
+# tasks file for iptables
+- name: "Instalando iptables"
+  package:
+    name: iptables
+    state: present
+
+- name: "Permitir conexiones a los puertos especificados"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ item }}"
+    jump: ACCEPT
+  loop: "{{ firewall_allow_ports }}"
+
+- name: "Denegar conexiones a los puertos especificados"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ item }}"
+    jump: REJECT
+  loop: "{{ firewall_deny_ports }}"
+
+- name: "Crear la tabla de NAT"
+  iptables:
+    table: nat
+    chain: PREROUTING
+    jump: ACCEPT
+  ignore_errors: yes
+
+- name: "Redirigir puertos especificados"
+  iptables:
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    destination_port: "{{ item.src }}"
+    jump: REDIRECT
+    to_ports: "{{ item.dest }}"
+  loop: "{{ firewall_redirect_ports }}"
+
+- name: "Permitir conexiones desde las IPs especificadas"
+  iptables:
+    chain: INPUT
+    source: "{{ item }}"
+    jump: ACCEPT
+  loop: "{{ firewall_allow_ips }}"
+
+- name: "Denegar conexiones desde las IPs especificadas"
+  iptables:
+    chain: INPUT
+    source: "{{ item }}"
+    jump: REJECT
+  loop: "{{ firewall_deny_ips }}"
+
+- name: "Aplicar regla de MASQUERADE en postrouting"
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: enp0s3
+    jump: MASQUERADE
+  ignore_errors: yes
+
+- name: "Permitir el forward entre interfaces"
+  iptables:
+    chain: FORWARD
+    in_interface: enp0s8
+    out_interface: enp0s3
+    jump: ACCEPT
+  ignore_errors: yes
+
+- name: "Permitir conexiones relacionadas o establecidas"
+  iptables:
+    chain: FORWARD
+    in_interface: enp0s8
+    out_interface: enp0s3
+    match: state
+    state: RELATED,ESTABLISHED
+    jump: ACCEPT
+  ignore_errors: yes
+
+- name: "Aplicar reglas de iptables personalizadas"
+  iptables:
+    table: "{{ item.table }}"
+    chain: "{{ item.chain }}"
+    jump: "{{ item.rule }}"
+  loop: "{{ firewall_rules }}"
+  when: firewall_rules is defined

@@ -1,5 +1,5 @@
 ---
-# defaults file for firewall
+# defaults file for firewalld
 firewall_allow_ports: []
 firewall_deny_ports: []
 firewall_redirect_ports: []

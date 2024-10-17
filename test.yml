@@ -53,11 +53,11 @@
     - name: Flush all iptables NAT rules
       command: iptables -t nat -F
 
-- name: Aplicar rol firewall
+- name: Aplicar rol firewalld
   hosts: rocky
   become: yes
   roles:
-    - role: firewall
+    - role: firewalld
   vars:
     firewall_rules:
       - table: inet nat
