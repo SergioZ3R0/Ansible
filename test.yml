@@ -85,3 +85,4 @@
     - name: Save current iptables rules
       command: service iptables save
       ignore_errors: yes
+  ignore_errors: yes
