@@ -73,3 +73,18 @@
         chain: POSTROUTING
         out_interface: enp0s3
         jump: MASQUERADE
+
+    - name: Enable and start iptables service
+      systemd:
+        name: iptables
+        enabled: yes
+        state: started
+      when: ansible_os_family == "RedHat"
+
+    - name: Move existing iptables configuration file
+      command: mv /etc/sysconfig/iptables /etc/sysconfig/iptables.old
+      ignore_errors: yes
+
+    - name: Save current iptables rules
+      command: service iptables save
+      ignore_errors: yes
