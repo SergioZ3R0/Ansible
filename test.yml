@@ -37,15 +37,15 @@
         state: started
       when: ansible_os_family == "RedHat"
 
-- name: Stop and disable firewalld-libvirtd-nftables services
-  systemd:
-    name: "{{ item }}"
-    state: stopped
-    enabled: no
-  loop:
-    - firewalld
-    - libvirtd
-    - nftables
+    - name: Stop and disable firewalld-libvirtd-nftables services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop:
+        - firewalld
+        - libvirtd
+        - nftables
 
     - name: Flush all iptables rules
       command: iptables -F
