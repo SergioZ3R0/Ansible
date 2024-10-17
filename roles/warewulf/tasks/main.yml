@@ -1,18 +1,21 @@
 ---
 # tasks file for warewulf
 - name: "Include install role"
-  include_role:
+  import_role:
     name: install
-  when : install_warewulf == true
+  when: install_warewulf == true
+
 - name: "Include firewalld role"
-  include_role:
-    name: firewalld
-  when : firewall_warewulf == true
+  import_role:
+    name: iptables
+  when: firewall_warewulf == true
+
 - name: "Include monitoring role"
-  include_role:
+  import_role:
     name: monitoring
-  when : monitoring_warewulf == true
-#INCLUDES
+  when: monitoring_warewulf == true
+
+# INCLUDES
 - name: "Modify /etc/hosts"
   template:
     src: hosts.j2
