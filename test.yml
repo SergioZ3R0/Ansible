@@ -16,8 +16,6 @@
 - name: Configurar sistema
   hosts: rocky
   become: yes
-  roles:
-    - role: warewulf
   vars:
     make_hosts: true
   tasks:
