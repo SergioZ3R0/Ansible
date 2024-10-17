@@ -53,19 +53,23 @@
     - name: Flush all iptables NAT rules
       command: iptables -t nat -F
 
-- name: Aplicar rol firewalld
-  hosts: rocky
-  become: yes
-  roles:
-    - role: iptables
-  vars:
-    firewall_rules:
-      - table: inet nat
-        chain: postrouting
-        rule: 'oifname "enp0s3" masquerade'
-      - table: inet filter
-        chain: forward
-        rule: 'iifname "enp0s8" oifname "enp0s3" accept'
-      - table: inet filter
-        chain: forward
-        rule: 'iifname "enp0s8" oifname "enp0s3" ct state related,established accept'
+    - name: Enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        reload: yes
+
+    - name: Ensure IP forwarding is persistent
+      lineinfile:
+        path: /etc/sysctl.conf
+        regexp: '^net.ipv4.ip_forward'
+        line: 'net.ipv4.ip_forward = 1'
+        state: present
+
+    - name: Apply masquerade rule to iptables
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        out_interface: enp0s3
+        jump: MASQUERADE
