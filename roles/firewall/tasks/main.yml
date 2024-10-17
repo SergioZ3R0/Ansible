@@ -6,56 +6,42 @@
     state: present
 
 - name: "Crear la tabla de filtro"
-  nftables:
-    table: filter
-    family: inet
-    state: present
+  command: "nft add table inet filter"
+  ignore_errors: yes
+
+- name: "Crear la cadena de entrada en la tabla de filtro"
+  command: "nft add chain inet filter input { type filter hook input priority 0 \; }"
+  ignore_errors: yes
 
 - name: "Permitir conexiones a los puertos especificados"
-  nftables:
-    table: filter
-    chain: input
-    rule: "tcp dport {{ item }} accept"
+  command: "nft add rule inet filter input tcp dport {{ item }} accept"
   loop: "{{ firewall_allow_ports }}"
 
 - name: "Denegar conexiones a los puertos especificados"
-  nftables:
-    table: filter
-    chain: input
-    rule: "tcp dport {{ item }} reject"
+  command: "nft add rule inet filter input tcp dport {{ item }} reject"
   loop: "{{ firewall_deny_ports }}"
 
 - name: "Crear la tabla de NAT"
-  nftables:
-    table: nat
-    family: inet
-    state: present
+  command: "nft add table inet nat"
+  ignore_errors: yes
+
+- name: "Crear la cadena de prerouting en la tabla de NAT"
+  command: "nft add chain inet nat prerouting { type nat hook prerouting priority 0 \; }"
+  ignore_errors: yes
 
 - name: "Redirigir puertos especificados"
-  nftables:
-    table: nat
-    chain: prerouting
-    rule: "tcp dport {{ item.src }} redirect to :{{ item.dest }}"
+  command: "nft add rule inet nat prerouting tcp dport {{ item.src }} redirect to :{{ item.dest }}"
   loop: "{{ firewall_redirect_ports }}"
 
 - name: "Permitir conexiones desde las IPs especificadas"
-  nftables:
-    table: filter
-    chain: input
-    rule: "ip saddr {{ item }} accept"
+  command: "nft add rule inet filter input ip saddr {{ item }} accept"
   loop: "{{ firewall_allow_ips }}"
 
 - name: "Denegar conexiones desde las IPs especificadas"
-  nftables:
-    table: filter
-    chain: input
-    rule: "ip saddr {{ item }} reject"
+  command: "nft add rule inet filter input ip saddr {{ item }} reject"
   loop: "{{ firewall_deny_ips }}"
 
 - name: "Aplicar reglas de firewall personalizadas"
-  nftables:
-    table: "{{ item.table }}"
-    chain: "{{ item.chain }}"
-    rule: "{{ item.rule }}"
+  command: "nft add rule {{ item.table }} {{ item.chain }} {{ item.rule }}"
   loop: "{{ firewall_rules }}"
   when: firewall_rules is defined
