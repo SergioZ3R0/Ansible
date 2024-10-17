@@ -16,7 +16,7 @@
 # INCLUDES
 - name: "Modify /etc/hosts"
   template:
-    src: hosts.j2
+    src: ./roles/warewulf/confFiles/hosts.j2
     dest: /etc/hosts
     owner: root
     group: root
