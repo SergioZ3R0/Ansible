@@ -1,4 +1,5 @@
 ---
+"""
 - name: Aplicar rol de instalación de software
   hosts: rocky
   become: yes
@@ -17,7 +18,7 @@
     services:
       - name: lldpd
         enabled: true
-
+"""
 - name: Configurar sistema
   hosts: rocky
   become: yes
