@@ -5,10 +5,9 @@
   roles:
     - role: warewulf
   vars:
-    make_hosts: false
+    make_hosts: true
     monitoring_warewulf: false
     install_dnf: true
-    install_warewulf: true
     dnf_packages: "{{ basic_packages }}"
     services:
       - name: lldpd
