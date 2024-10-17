@@ -10,7 +10,7 @@
   ignore_errors: yes
 
 - name: "Crear la cadena de entrada en la tabla de filtro"
-  command: "nft add chain inet filter input { type filter hook input priority 0 \; }"
+  command: "nft add chain inet filter input { type filter hook input priority 0 \\; }"
   ignore_errors: yes
 
 - name: "Permitir conexiones a los puertos especificados"
