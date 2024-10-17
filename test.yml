@@ -1,11 +1,10 @@
 ---
-- name: Aplicar rol de instalación de software
+- name: Aplicar instalación de software
   hosts: rocky
   become: yes
   roles:
     - role: warewulf
   vars:
-    make_hosts: true
     monitoring_warewulf: false
     install_dnf: true
     dnf_packages: "{{ basic_packages }}"
@@ -16,6 +15,10 @@
 - name: Configurar sistema
   hosts: rocky
   become: yes
+  roles:
+    - role: warewulf
+  vars:
+    make_hosts: true
   tasks:
     - name: Enable powertools repository
       command: dnf config-manager --set-enabled powertools
