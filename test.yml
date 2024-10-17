@@ -112,3 +112,36 @@
         name: chronyd
         enabled: yes
         state: restarted
+
+    - name: Disable SELinux
+      command: sed -i 's/\(^SELINUX=\).*/\1disabled/g' /etc/selinux/config
+
+    - name: Create directory for OS updates
+      file:
+        path: /install/osupdates/rocky8/x86_64/
+        state: directory
+        mode: '0755'
+
+    - name: Sync AppStream repository
+      command: dnf reposync -n --repoid=appstream --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync BaseOS repository
+      command: dnf reposync -n --repoid=baseos --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync EPEL repository
+      command: dnf reposync -n --repoid=epel --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync EPEL Modular repository
+      command: dnf reposync -n --repoid=epel-modular --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync Extras repository
+      command: dnf reposync -n --repoid=extras --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync HA repository
+      command: dnf reposync -n --repoid=ha --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync PowerTools repository
+      command: dnf reposync -n --repoid=powertools --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Rename HA directory to highavailability
+      command: mv /install/osupdates/rocky8/x86_64/ha /install/osupdates/rocky8/x86_64/highavailability

@@ -52,3 +52,5 @@ basic_packages:
   - xorg-x11-utils
   - clustershell
   - python3-clustershell
+  - createrepo
+  - dnf-utils
