@@ -85,4 +85,12 @@
     - name: Save current iptables rules
       command: service iptables save
       ignore_errors: yes
-  ignore_errors: yes
+
+    - name: Configure Clustershell groups
+      template:
+        src: ./roles/warewulf/confFiles/local.cfg.j2
+        dest: /etc/clustershell/groups.d/local.cfg
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_os_family == "RedHat"
