@@ -29,6 +29,14 @@
   command: "nft add chain inet nat prerouting { type nat hook prerouting priority 0 \\; }"
   ignore_errors: yes
 
+- name: "Crear la cadena de postrouting en la tabla de NAT"
+  command: "nft add chain inet nat postrouting { type nat hook postrouting priority 100 \\; }"
+  ignore_errors: yes
+
+- name: "Aplicar regla de MASQUERADE en postrouting"
+  command: "nft add rule inet nat postrouting oif enp0s3 masquerade"
+  ignore_errors: yes
+
 - name: "Redirigir puertos especificados"
   command: "nft add rule inet nat prerouting tcp dport {{ item.src }} redirect to :{{ item.dest }}"
   loop: "{{ firewall_redirect_ports }}"
