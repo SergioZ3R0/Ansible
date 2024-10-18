@@ -160,16 +160,15 @@
       when: ansible_os_family == "RedHat"
 
     - name: Configurar VirtualHost por defecto
-      hosts: rocky
-      become: yes
       vars:
         server_name: "192.168.1.1"
         server_alias: "headnode.hpc.domain"
-      tasks:
-        - name: Aplicar plantilla de VirtualHost
-          template:
-            src: templates/000-default.conf.j2
-            dest: /etc/httpd/conf.d/000-default.conf
-            owner: root
-            group: root
-            mode: '0644'
+        block:
+          - name: Aplicar plantilla de VirtualHost
+            template:
+              src: templates/000-default.conf.j2
+              dest: /etc/httpd/conf.d/000-default.conf
+              owner: root
+              group: root
+              mode: '0644'
+
