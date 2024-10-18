@@ -1,4 +1,8 @@
 ---
+- name: Enable EPEL repository
+  command: dnf install -y epel-release
+  when: ansible_os_family == "RedHat"
+
 - name: Aplicar instalación de software
   hosts: rocky
   become: yes
@@ -86,6 +90,12 @@
     - name: Save current iptables rules
       command: service iptables save
       ignore_errors: yes
+
+    - name: Create directory for Clustershell groups
+      file:
+        path: /etc/clustershell/groups.d
+        state: directory
+        mode: '0755'
 
     - name: Configure Clustershell groups
       template:
