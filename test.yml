@@ -126,6 +126,9 @@
       vars:
         sync: true
       block:
+        - name: Enable AppStream repository
+          command: dnf config-manager --set-enabled rhel-8-for-x86_64-appstream-rpms
+
         - name: Sync AppStream repository
           command: dnf reposync -n --repoid=rhel-8-for-x86_64-appstream-rpms --download-path=/install/osupdates/rhels8/x86_64 --downloadcomps --download-metadata --gpgcheck
 
