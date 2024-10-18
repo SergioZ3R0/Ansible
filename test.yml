@@ -127,29 +127,30 @@
         sync: true
       block:
         - name: Sync AppStream repository
-          command: dnf reposync -n --repoid=appstream --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+          command: dnf reposync -n --repoid=rhel-8-for-x86_64-appstream-rpms --download-path=/install/osupdates/rhels8/x86_64 --downloadcomps --download-metadata --gpgcheck
 
         - name: Sync BaseOS repository
-          command: dnf reposync -n --repoid=baseos --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+          command: dnf reposync -n --repoid=rhel-8-for-x86_64-baseos-rpms --download-path=/install/osupdates/rhels8/x86_64 --downloadcomps --download-metadata --gpgcheck
 
         - name: Sync EPEL repository
-          command: dnf reposync -n --repoid=epel --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+          command: dnf reposync -n --repoid=epel --download-path=/install/osupdates/rhels8/x86_64 --downloadcomps --download-metadata --gpgcheck
 
         - name: Sync EPEL Modular repository
-          command: dnf reposync -n --repoid=epel-modular --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+          command: dnf reposync -n --repoid=epel-modular --download-path=/install/osupdates/rhels8/x86_64 --downloadcomps --download-metadata --gpgcheck
 
-        - name: Sync Extras repository
-          command: dnf reposync -n --repoid=extras --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+        - name: Sync CodeReady repository
+          command: dnf reposync -n --repoid=codeready-builder-for-rhel-8-x86_64-rpms --download-path=/install/osupdates/rhels8/x86_64 --downloadcomps --download-metadata --gpgcheck
 
-        - name: Sync HA repository
-          command: dnf reposync -n --repoid=ha --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+        - name: Mv AppStream repository
+          command: mv /install/osupdates/rhels8/x86_64/rhel-8-for-x86_64-appstream-rpms /install/osupdates/rhels8/x86_64/appstream
 
-        - name: Sync PowerTools repository
-          command: dnf reposync -n --repoid=powertools --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+        - name: Mv BaseOS repository
+          command: mv /install/osupdates/rhels8/x86_64/rhel-8-for-x86_64-baseos-rpms /install/osupdates/rhels8/x86_64/baseos
 
-        - name: Rename HA directory to highavailability
-          command: mv /install/osupdates/rocky8/x86_64/ha /install/osupdates/rocky8/x86_64/highavailability
+        - name: Mv CodeReady repository
+          command: mv /install/osupdates/rhels8/x86_64/codeready-builder-for-rhel-8-x86_64-rpms /install/osupdates/rhels8/x86_64/codeready-builder
       when: sync == true
+
 
     - name: Disable user directories web configuration
       command: mv /etc/httpd/conf.d/userdir.conf /etc/httpd/conf.d/userdir.conf.disabled
@@ -171,4 +172,9 @@
             owner: root
             group: root
             mode: '0644'
+        - name: Reiniciar servicio httpd
+          systemd:
+            name: httpd
+            state: restarted
+
 
