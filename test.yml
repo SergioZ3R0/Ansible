@@ -175,7 +175,7 @@
       block:
         - name: Aplicar plantilla de VirtualHost
           template:
-            src: templates/000-default.conf.j2
+            src: roles/warewulf/confFiles/000-default.conf.j2
             dest: /etc/httpd/conf.d/000-default.conf
             owner: root
             group: root
