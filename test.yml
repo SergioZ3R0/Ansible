@@ -160,7 +160,7 @@
       when: ansible_os_family == "RedHat"
 
     - name: Configurar VirtualHost por defecto
-      hosts: webservers
+      hosts: rocky
       become: yes
       vars:
         server_name: "192.168.1.1"
