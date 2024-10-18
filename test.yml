@@ -160,9 +160,15 @@
           command: mv /install/osupdates/rocky8/x86_64/ha /install/osupdates/rocky8/x86_64/highavailability
       when: sync == true
 
+    - name: Check if userdir.conf exists
+      stat:
+        path: /etc/httpd/conf.d/userdir.conf
+      register: userdir_conf
+
     - name: Disable user directories web configuration
       command: mv /etc/httpd/conf.d/userdir.conf /etc/httpd/conf.d/userdir.conf.disabled
-      when: ansible_os_family == "RedHat"
+      when: userdir_conf.stat.exists
+      ignore_errors: yes
 
     - name: Disable welcome page configuration
       command: mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.disabled
