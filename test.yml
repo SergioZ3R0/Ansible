@@ -163,7 +163,7 @@
       hosts: webservers
       become: yes
       vars:
-        server_name: "10.1.0.1"
+        server_name: "192.168.1.1"
         server_alias: "headnode.hpc.domain"
       tasks:
         - name: Aplicar plantilla de VirtualHost
