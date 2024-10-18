@@ -1,11 +1,11 @@
 ---
-- name: Enable EPEL repository
-  command: dnf install -y epel-release
-  when: ansible_os_family == "RedHat"
-
 - name: Aplicar instalación de software
   hosts: rocky
   become: yes
+  block:
+    - name: Enable EPEL repository
+      command: dnf install -y epel-release
+      when: ansible_os_family == "RedHat"
   roles:
     - role: warewulf
   vars:
