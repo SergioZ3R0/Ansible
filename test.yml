@@ -124,7 +124,7 @@
 
     - name: Sync repositories
       vars:
-        sync: false
+        sync: true
       block:
         - name: Sync AppStream repository
           command: dnf reposync -n --repoid=appstream --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
