@@ -152,11 +152,11 @@
       when: sync == true
 
     - name: Disable user directories web configuration
-      command: mv /etc/httpd/conf.d/userdir.conf{,.disabled}
+      command: mv /etc/httpd/conf.d/userdir.conf /etc/httpd/conf.d/userdir.conf.disabled
       when: ansible_os_family == "RedHat"
 
     - name: Disable welcome page configuration
-      command: mv /etc/httpd/conf.d/welcome.conf{,.disabled}
+      command: mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.disabled
       when: ansible_os_family == "RedHat"
 
     - name: Configurar VirtualHost por defecto
