@@ -91,12 +91,6 @@
       command: service iptables save
       ignore_errors: yes
 
-    - name: Create directory for Clustershell groups
-      file:
-        path: /etc/clustershell/groups.d
-        state: directory
-        mode: '0755'
-
     - name: Configure Clustershell groups
       template:
         src: ./roles/warewulf/confFiles/local.cfg.j2
