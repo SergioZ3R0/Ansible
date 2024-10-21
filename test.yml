@@ -204,13 +204,23 @@
             mode: '0644'
 
     - name: Manage YUM repository files
-      block:
+      hosts: rocky
+      become: yes
+      tasks:
         - name: Create directory for online repos
           file:
             path: /etc/yum.repos.d/online-repos
             state: directory
             mode: '0755'
 
+        - name: Check if any .repo files exist
+          find:
+            paths: /etc/yum.repos.d/
+            patterns: '*.repo'
+          register: repo_files
+
         - name: Copy .repo files to online-repos directory
           command: cp -p /etc/yum.repos.d/*.repo /etc/yum.repos.d/online-repos/
+          when: repo_files.matched > 0
+          ignore_errors: yes
 
