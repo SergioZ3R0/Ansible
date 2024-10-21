@@ -202,7 +202,10 @@
             owner: root
             group: root
             mode: '0644'
-
+- name: Manage YUM repository files
+  hosts: rocky
+  become: yes
+  tasks:
     - name: Create directory for online repos
       file:
         path: /etc/yum.repos.d/online-repos
