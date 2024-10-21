@@ -202,6 +202,7 @@
             owner: root
             group: root
             mode: '0644'
+
 - name: Manage YUM repository files
   hosts: rocky
   become: yes
@@ -219,7 +220,10 @@
       register: repo_files
 
     - name: Copy .repo files to online-repos directory
-      command: cp -p /etc/yum.repos.d/*.repo /etc/yum.repos.d/online-repos/
+      copy:
+        src: "{{ item.path }}"
+        dest: /etc/yum.repos.d/online-repos/
+        mode: '0644'
+      loop: "{{ repo_files.files }}"
       when: repo_files.matched > 0
       ignore_errors: yes
-
