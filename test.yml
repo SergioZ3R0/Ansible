@@ -11,7 +11,7 @@
   vars:
     make_hosts: true
     monitoring_warewulf: false
-    install_dnf: true
+    install_dnf: false
     dnf_packages: "{{ basic_packages }}"
     services:
       - name: lldpd
@@ -227,3 +227,69 @@
       loop: "{{ repo_files.files }}"
       when: repo_files.matched > 0
       ignore_errors: yes
+
+- name: Manage YUM local repository
+  hosts: rocky
+  become: yes
+  tasks:
+    - name: Set REPOSIP variable
+      set_fact:
+        repos_ip: "192.168.1.1"  # Use the head node internal network IP address
+
+    - name: Remove unnecessary repo files
+      file:
+        path: "/etc/yum.repos.d/{{ item }}"
+        state: absent
+      loop:
+        - epel-testing*.repo
+        - Rocky-Debuginfo.repo
+        - Rocky-Devel.repo
+        - Rocky-Media.repo
+        - Rocky-NFV.repo
+        - Rocky-Plus.repo
+        - Rocky-ResilientStorage.repo
+        - Rocky-RT.repo
+        - Rocky-Sources.repo
+
+    - name: Rename repo files
+      command: >
+        bash -c 'for i in $(ls /etc/yum.repos.d/*.repo | awk -F"." "{print \$1}"); do mv /etc/yum.repos.d/$i{,-local}.repo; done'
+
+    - name: Update repo file names
+      command: sed -i 's/\]/-local\]/' /etc/yum.repos.d/*.repo
+
+    - name: Update repo file descriptions
+      command: sed -i '/name/s/$/ - Local/' /etc/yum.repos.d/*.repo
+
+    - name: Comment out mirrorlist and metalink in Rocky repos
+      command: sed -i '/mirrorlist=/s/^/#/' /etc/yum.repos.d/Rocky*.repo
+
+    - name: Comment out metalink in EPEL repos
+      command: sed -i '/metalink=/s/^/#/' /etc/yum.repos.d/epel*.repo
+
+    - name: Backup and restore EPEL GPG key
+      block:
+        - name: Backup EPEL GPG key
+          copy:
+            src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+            dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8.bak
+
+        - name: Remove EPEL release
+          command: dnf remove -y epel-release
+
+        - name: Restore EPEL GPG key
+          copy:
+            src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8.bak
+            dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+
+    - name: Update baseurl in EPEL repo files
+      command: >
+        sed -i "s/#baseurl=.*$basearch$/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/epel/" /etc/yum.repos.d/epel-local.repo
+
+    - name: Update baseurl in EPEL Modular repo files
+      command: >
+        sed -i "s/#baseurl=.*$basearch$/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/epel-modular/" /etc/yum.repos.d/epel-modular-local.repo
+
+    - name: Update baseurl in Rocky repo files
+      command: >
+        bash -c 'for i in $(ls /etc/yum.repos.d/Rocky*.repo); do sed -i "s/#baseurl.*/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/$(echo $i | awk -F"-" "{print tolower (\$2)}")/" $i; done'
