@@ -1,6 +1,6 @@
 #Directory of vars for the usage of ansible playbooks
 ---
-created_username: isard
+created_username: name
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 paquets: [ 'curl', 'glances', 'git', 'ufw']
 backupSC: "isard@localhost:../backup-mysql.sh"
