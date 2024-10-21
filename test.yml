@@ -18,6 +18,7 @@
   roles:
     - role: warewulf
   vars:
+    make_hosts: true # Create /etc/hosts file
     monitoring_warewulf: false # Disable monitoring installation
     install_dnf: true # Install DNF packages
     dnf_packages: "{{ basic_packages }}" # Install basic packages defined in roles/warewulf/vars/main.yml
