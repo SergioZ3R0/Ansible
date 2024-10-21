@@ -168,7 +168,7 @@
         - name: Rename HA directory to highavailability
           command: mv /install/osupdates/rocky8/x86_64/ha /install/osupdates/rocky8/x86_64/highavailability
           when: highavailability_dir.stat.exists == false
-      when: sync == true
+      when: sync == false
 
     - name: Check if userdir.conf exists
       stat:
@@ -180,9 +180,15 @@
       when: userdir_conf.stat.exists
       ignore_errors: yes
 
+    - name: Check if welcome.conf exists
+      stat:
+        path: /etc/httpd/conf.d/welcome.conf
+      register: welcome_conf
+
     - name: Disable welcome page configuration
       command: mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.disabled
-      when: ansible_os_family == "RedHat"
+      when: welcome_conf.stat.exists
+      ignore_errors: yes
 
     - name: Configurar VirtualHost por defecto
       vars:
@@ -196,4 +202,17 @@
             owner: root
             group: root
             mode: '0644'
+
+    - name: Manage YUM repository files
+      hosts: rocky
+      become: yes
+      tasks:
+        - name: Create directory for online repos
+          file:
+            path: /etc/yum.repos.d/online-repos
+            state: directory
+            mode: '0755'
+
+        - name: Copy .repo files to online-repos directory
+          command: cp -p /etc/yum.repos.d/*.repo /etc/yum.repos.d/online-repos/
 
