@@ -1,14 +1,24 @@
 ---
-- name: Aplicar instalación de software
+- name: Enable repositories
   hosts: rocky
   become: yes
   tasks:
     - name: Enable EPEL repository
       command: dnf install -y epel-release
       when: ansible_os_family == "RedHat"
+
+    - name: Enable powertools repository
+      command: dnf config-manager --set-enabled powertools
+      when: ansible_os_family == "RedHat"
+
+- name: Aplicar instalación de software
+  hosts: rocky
+  become: yes
+  tasks:
   roles:
     - role: warewulf
   vars:
+    make_hosts: true # Create /etc/hosts file
     monitoring_warewulf: false # Disable monitoring installation
     install_dnf: true # Install DNF packages
     dnf_packages: "{{ basic_packages }}" # Install basic packages defined in roles/warewulf/vars/main.yml
@@ -22,10 +32,6 @@
   vars:
     make_hosts: true # Create /etc/hosts file
   tasks:
-    - name: Enable powertools repository
-      command: dnf config-manager --set-enabled powertools
-      when: ansible_os_family == "RedHat"
-
     - name: Install EPEL release package
       command: dnf install -y epel-release
       when: ansible_os_family == "RedHat"
@@ -196,7 +202,7 @@
       block:
         - name: Apply default template to 000-default.conf
           template: # Apply the 000-default.conf.j2 template to the /etc/httpd/conf.d/000-default.conf file
-            src: roles/headNodeD/confFiles/000-default.conf.j2
+            src: roles/warewulf/confFiles/000-default.conf.j2
             dest: /etc/httpd/conf.d/000-default.conf
             owner: root
             group: root
