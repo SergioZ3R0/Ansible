@@ -202,7 +202,7 @@
       block:
         - name: Apply default template to 000-default.conf
           template: # Apply the 000-default.conf.j2 template to the /etc/httpd/conf.d/000-default.conf file
-            src: roles/headNodeD/confFiles/000-default.conf.j2
+            src: roles/warewulf/confFiles/000-default.conf.j2
             dest: /etc/httpd/conf.d/000-default.conf
             owner: root
             group: root
