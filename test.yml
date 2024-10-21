@@ -156,8 +156,18 @@
           command: dnf reposync -n --repoid=powertools --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck -v
           when: ansible_os_family == "RedHat"
 
+        - name: Check if highavailability directory exists
+          stat:
+            path: /install/osupdates/rocky8/x86_64/highavailability
+          register: highavailability_dir
+
+        - name: Remove existing highavailability directory
+          command: rm -rf /install/osupdates/rocky8/x86_64/highavailability
+          when: highavailability_dir.stat.exists
+
         - name: Rename HA directory to highavailability
           command: mv /install/osupdates/rocky8/x86_64/ha /install/osupdates/rocky8/x86_64/highavailability
+          when: highavailability_dir.stat.exists == false
       when: sync == true
 
     - name: Check if userdir.conf exists
