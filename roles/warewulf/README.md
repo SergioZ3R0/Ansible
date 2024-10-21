@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role manages the configuration of Warewulf, including setting up YUM local repositories, configuring hosts, chrony, and Apache virtual hosts.
 
 Requirements
 ------------
@@ -16,16 +16,37 @@ A description of the settable variables for this role should go here, including 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+No dependencies on other roles
 
-Example Playbook
+Requirements
+------------
+
+- Ansible 2.9 or higher
+- Access to the target hosts with necessary privileges
+- Rocky Linux 8.4 or higher
+
+Role Variables
+------------
+- [vars](vars/main.yml)
+- Playbook Variables:
+- repos_ip: The IP address of the repository server (default: 192.168.1.1).
+- server_name: The server name for the Apache virtual host.
+- server_alias: The server alias for the Apache virtual host.
+
+Configuration Files
+------------
+
+- [hosts.j2](confFiles/hosts.j2)
+- [chorny.conf.j2](confFiles/chrony.conf.j2)
+- [000-default.conf.j2](confFiles/000-default.conf.j2)
+- [local.cfg.j2](confFiles/local.cfg.j2)
+
+Playbooks
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- [Head Node Deploy](tests/headNodeDeploy.yml)
 
 License
 -------
