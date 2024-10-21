@@ -306,6 +306,7 @@
           copy:
             src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8.bak
             dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+            remote_src: yes
 
     - name: Update baseurl in EPEL repo files
       shell: |
