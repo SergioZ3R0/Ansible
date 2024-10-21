@@ -9,7 +9,7 @@ Requirements
 - Ansible 2.9 or higher
 - Access to the target hosts with necessary privileges
 - Rocky Linux 8.4 or higher
-- 
+
 Role Variables
 --------------
 
