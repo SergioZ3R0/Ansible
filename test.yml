@@ -252,9 +252,13 @@
         - Rocky-Sources.repo
 
     - name: Rename repo files
-      command: >
-        bash -c 'for i in $(ls /etc/yum.repos.d/*.repo | awk -F"." "{print \$1}"); do mv /etc/yum.repos.d/$i{,-local}.repo; done'
-
+      shell: |
+        for i in $(ls /etc/yum.repos.d/*.repo); do
+          base=$(basename $i .repo)
+          mv /etc/yum.repos.d/$base.repo /etc/yum.repos.d/$base-local.repo
+        done
+      args:
+        executable: /bin/bash
     - name: Update repo file names
       command: sed -i 's/\]/-local\]/' /etc/yum.repos.d/*.repo
 
