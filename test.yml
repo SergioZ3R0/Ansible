@@ -259,17 +259,38 @@
         done
       args:
         executable: /bin/bash
+
     - name: Update repo file names
-      command: sed -i 's/\]/-local\]/' /etc/yum.repos.d/*.repo
+      shell: |
+        for file in /etc/yum.repos.d/*.repo; do
+          [ -e "$file" ] && sed -i 's/\]/-local\]/' "$file"
+        done
+      args:
+        executable: /bin/bash
 
     - name: Update repo file descriptions
-      command: sed -i '/name/s/$/ - Local/' /etc/yum.repos.d/*.repo
+      shell: |
+        for file in /etc/yum.repos.d/*.repo; do
+          [ -e "$file" ] && sed -i '/name/s/$/ - Local/' "$file"
+        done
+      args:
+        executable: /bin/bash
 
     - name: Comment out mirrorlist and metalink in Rocky repos
-      command: sed -i '/mirrorlist=/s/^/#/' /etc/yum.repos.d/Rocky*.repo
+      shell: |
+        for file in /etc/yum.repos.d/Rocky*.repo; do
+          [ -e "$file" ] && sed -i '/mirrorlist=/s/^/#/' "$file"
+        done
+      args:
+        executable: /bin/bash
 
     - name: Comment out metalink in EPEL repos
-      command: sed -i '/metalink=/s/^/#/' /etc/yum.repos.d/epel*.repo
+      shell: |
+        for file in /etc/yum.repos.d/epel*.repo; do
+          [ -e "$file" ] && sed -i '/metalink=/s/^/#/' "$file"
+        done
+      args:
+        executable: /bin/bash
 
     - name: Backup and restore EPEL GPG key
       block:
@@ -287,13 +308,21 @@
             dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
 
     - name: Update baseurl in EPEL repo files
-      command: >
-        sed -i "s/#baseurl=.*$basearch$/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/epel/" /etc/yum.repos.d/epel-local.repo
+      shell: |
+        [ -e /etc/yum.repos.d/epel-local.repo ] && sed -i "s/#baseurl=.*$basearch$/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/epel/" /etc/yum.repos.d/epel-local.repo
+      args:
+        executable: /bin/bash
 
     - name: Update baseurl in EPEL Modular repo files
-      command: >
-        sed -i "s/#baseurl=.*$basearch$/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/epel-modular/" /etc/yum.repos.d/epel-modular-local.repo
+      shell: |
+        [ -e /etc/yum.repos.d/epel-modular-local.repo ] && sed -i "s/#baseurl=.*$basearch$/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/epel-modular/" /etc/yum.repos.d/epel-modular-local.repo
+      args:
+        executable: /bin/bash
 
     - name: Update baseurl in Rocky repo files
-      command: >
-        bash -c 'for i in $(ls /etc/yum.repos.d/Rocky*.repo); do sed -i "s/#baseurl.*/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/$(echo $i | awk -F"-" "{print tolower (\$2)}")/" $i; done'
+      shell: |
+        for i in $(ls /etc/yum.repos.d/Rocky*.repo); do
+          [ -e "$i" ] && sed -i "s/#baseurl.*/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/$(echo $i | awk -F'-' '{print tolower (\$2)}')/" $i
+        done
+      args:
+        executable: /bin/bashaseurl.*/baseurl=http:\/\/{{ repos_ip }}\/install\/osupdates\/rocky8\/x86_64\/$(echo $i | awk -F"-" "{print tolower (\$2)}")/" $i; done'
