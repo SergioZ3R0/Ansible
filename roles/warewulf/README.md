@@ -6,32 +6,23 @@ This role manages the configuration of Warewulf, including setting up YUM local 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
-
-Role Variables
---------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-No dependencies on other roles
-
-Requirements
-------------
-
 - Ansible 2.9 or higher
 - Access to the target hosts with necessary privileges
 - Rocky Linux 8.4 or higher
-
+- 
 Role Variables
-------------
+--------------
+
 - [vars](vars/main.yml)
 - Playbook Variables:
 - repos_ip: The IP address of the repository server (default: 192.168.1.1).
 - server_name: The server name for the Apache virtual host.
 - server_alias: The server alias for the Apache virtual host.
+
+Dependencies
+------------
+
+No dependencies on other roles
 
 Configuration Files
 ------------
