@@ -207,6 +207,7 @@
             owner: root
             group: root
             mode: '0644'
+
     - name: Enable and start Apache service
       hosts: rocky
       become: yes
@@ -340,25 +341,25 @@
           repo_name=$(basename $file .repo)
           case $repo_name in
             Rocky-AppStream-local)
-              baseurl="/install/osupdates/rocky8/x86_64/appstream"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/appstream"
               ;;
             Rocky-BaseOS-local)
-              baseurl="/install/osupdates/rocky8/x86_64/baseos"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/baseos"
               ;;
             Rocky-Extras-local)
-              baseurl="/install/osupdates/rocky8/x86_64/extras"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/extras"
               ;;
             Rocky-HighAvailability-local)
-              baseurl="/install/osupdates/rocky8/x86_64/ha"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/ha"
               ;;
             Rocky-PowerTools-local)
-              baseurl="/install/osupdates/rocky8/x86_64/powertools"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/powertools"
               ;;
             epel-local)
-              baseurl="/install/osupdates/rocky8/x86_64/epel"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/epel"
               ;;
             epel-modular-local)
-              baseurl="/install/osupdates/rocky8/x86_64/epel-modular"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/epel-modular"
               ;;
             *)
               baseurl=""
@@ -369,6 +370,3 @@
             sed -i "s|^baseurl=.*$|baseurl=$baseurl|" "$file"
           fi
         done
-      args:
-        executable: /bin/bash
-      when: repo_files.matched > 0
