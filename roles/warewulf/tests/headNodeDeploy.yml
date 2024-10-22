@@ -11,7 +11,7 @@
       command: dnf config-manager --set-enabled powertools
       when: ansible_os_family == "RedHat"
 
-- name: Enable software installation
+- name: Aplicar instalación de software
   hosts: rocky
   become: yes
   tasks:
@@ -26,7 +26,7 @@
       - name: lldpd # Enable and start lldpd service
         enabled: true
 
-- name: Configure system settings # Configure system settings
+- name: Configurar sistema # Configure system settings
   hosts: rocky
   become: yes
   vars:
@@ -207,6 +207,15 @@
             owner: root
             group: root
             mode: '0644'
+    - name: Enable and start Apache service
+      hosts: rocky
+      become: yes
+      tasks:
+        - name: Enable httpd service
+          systemd:
+            name: httpd
+            enabled: yes
+            state: started
 
 - name: Manage YUM repository files # Manage YUM repository files on the head node to use the local repository
   hosts: rocky
@@ -319,27 +328,47 @@
             dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
             remote_src: yes
 
-    - name: Check if epel-local.repo exists
-      stat:
-        path: /etc/yum.repos.d/epel-local.repo
-      register: epel_local_repo
+    - name: Find all .repo files
+      find:
+        paths: /etc/yum.repos.d/
+        patterns: '*-local.repo'
+      register: repo_files
 
-    - name: Print epel-local.repo contents
-      command: cat /etc/yum.repos.d/epel-local.repo
-      when: epel_local_repo.stat.exists
-      register: epel_local_repo_contents
-
-    - debug:
-        msg: "{{ epel_local_repo_contents.stdout }}"
-      when: epel_local_repo.stat.exists
-
-    - name: Update baseurl in EPEL repo files if commented baseurl exists
+    - name: Update baseurl in all local repo files
       shell: |
-        if grep -q "^#baseurl=" /etc/yum.repos.d/epel-local.repo; then
-          sed -i "s|#baseurl=.*$|baseurl=http://{{ repos_ip }}/install/osupdates/rocky8/x86_64/epel|" /etc/yum.repos.d/epel-local.repo
-        else
-          echo "baseurl=http://{{ repos_ip }}/install/osupdates/rocky8/x86_64/epel" >> /etc/yum.repos.d/epel-local.repo
-        fi
+        for file in /etc/yum.repos.d/*-local.repo; do
+          repo_name=$(basename $file .repo)
+          case $repo_name in
+            Rocky-AppStream-local)
+              baseurl="/install/osupdates/rocky8/x86_64/appstream"
+              ;;
+            Rocky-BaseOS-local)
+              baseurl="/install/osupdates/rocky8/x86_64/baseos"
+              ;;
+            Rocky-Extras-local)
+              baseurl="/install/osupdates/rocky8/x86_64/extras"
+              ;;
+            Rocky-HighAvailability-local)
+              baseurl="/install/osupdates/rocky8/x86_64/ha"
+              ;;
+            Rocky-PowerTools-local)
+              baseurl="/install/osupdates/rocky8/x86_64/powertools"
+              ;;
+            epel-local)
+              baseurl="/install/osupdates/rocky8/x86_64/epel"
+              ;;
+            epel-modular-local)
+              baseurl="/install/osupdates/rocky8/x86_64/epel-modular"
+              ;;
+            *)
+              baseurl=""
+              ;;
+          esac
+          if [ -n "$baseurl" ]; then
+            sed -i "s|^#baseurl=.*$|baseurl=$baseurl|" "$file"
+            sed -i "s|^baseurl=.*$|baseurl=$baseurl|" "$file"
+          fi
+        done
       args:
         executable: /bin/bash
-      when: epel_local_repo.stat.exists
+      when: repo_files.matched > 0
