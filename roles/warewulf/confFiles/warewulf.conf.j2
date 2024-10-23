@@ -1,0 +1,62 @@
+WW_INTERNAL: 45
+ipaddr: {{ ipaddr }}
+netmask: {{ netmask }}
+network: {{ network }}
+warewulf:
+  port: 9873
+  secure: false
+  update interval: 60
+  autobuild overlays: true
+  host overlay: true
+  syslog: false
+  datastore: /usr/share
+  grubboot: false
+dhcp:
+  enabled: true
+  template: default
+  range start: 192.168.1.10
+  range end: 192.168.1.255
+  systemd name: dhcpd
+tftp:
+  enabled: true
+  tftproot: /var/lib/tftpboot
+  systemd name: tftp
+  ipxe:
+    "00:00": undionly.kpxe
+    "00:07": ipxe-snponly-x86_64.efi
+    "00:09": ipxe-snponly-x86_64.efi
+    00:0B: arm64-efi/snponly.efi
+nfs:
+  enabled: false
+#  export paths:
+#  - path: /home
+#    export options: rw,sync
+#    mount options: defaults
+#    mount: true
+#  - path: /opt
+#    export options: ro,sync,no_root_squash
+#    mount options: defaults
+#    mount: false
+#  systemd name: nfs-server
+ssh:
+  key types:
+  - rsa
+  - dsa
+  - ecdsa
+  - ed25519
+container mounts:
+- source: /etc/resolv.conf
+  dest: /etc/resolv.conf
+  readonly: true
+paths:
+  bindir: /usr/bin
+  sysconfdir: /etc
+  localstatedir: /var/lib
+  ipxesource: /usr/share/ipxe
+  srvdir: /var/lib
+  # firewallddir: /usr/lib/firewalld/services
+  systemddir: /usr/lib/systemd/system
+  wwoverlaydir: /var/lib/warewulf/overlays
+  wwchrootdir: /var/lib/warewulf/chroots
+  wwprovisiondir: /var/lib/warewulf/provision
+  wwclientdir: /warewulf

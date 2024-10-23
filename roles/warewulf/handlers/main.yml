@@ -1,2 +1,6 @@
 ---
 # handlers file for warewulf
+- name: restart warewulf
+  service:
+    name: warewulf
+    state: restarted

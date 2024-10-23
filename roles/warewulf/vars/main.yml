@@ -45,3 +45,54 @@ basic_packages:
   - createrepo
   - dnf-utils
   - httpd
+warewulf_packages:
+  - basesystem
+  - bash
+  - chkconfig
+  - coreutils
+  - cpio
+  - cronie
+  - crontabs
+  - dhclient
+  - e2fsprogs
+  - ethtool
+  - filesystem
+  - findutils
+  - initscripts
+  - ipmitool
+  - gawk
+  - grep
+  - gzip
+  - initscripts
+  - iproute
+  - iputils
+  - less
+  - kernel-core
+  - kernel-modules
+  - net-tools
+  - nfs-utils
+  - network-scripts
+  - openssh-clients
+  - openssh-server
+  - pam
+  - parted
+  - pciutils
+  - psmisc
+  - rsync
+  - rsyslog
+  - sed
+  - setup
+  - shadow-utils
+  - strace
+  - tar
+  - tzdata
+  - util-linux
+  - vim
+  - wget
+  - which
+  - words
+  - xfsprogs
+  - yum
+  - zlib
+  - zip
+  - rocky-release
