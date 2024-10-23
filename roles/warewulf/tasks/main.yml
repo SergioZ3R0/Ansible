@@ -1,5 +1,6 @@
 ---
 # tasks file for warewulf
+#GENERAL
 - name: "Instalar paquetes con dnf"
   dnf:
     name: "{{ item }}"
@@ -7,12 +8,13 @@
   loop: "{{ dnf_packages }}"
   when: ansible_os_family == "RedHat" and install_dnf == true
   ignore_errors: yes
-
+#---------------------------------------------------------------
 - name: "Include monitoring role"
   include_role:
     name: monitoring
   when: monitoring_warewulf == true
-
+#---------------------------------------------------------------
+#Used on headNodeDeploy.yml
 - name: "Modify /etc/hosts"
   template:
     src: ../confFiles/hosts.j2
@@ -21,7 +23,8 @@
     group: root
     mode: '0644'
   when: make_hosts == true
-
+#------------------------------------------------------------------
+#Used on warewulfInstall.yml
 - name: Edit the overlay with the template
   shell: |
     wwctl overlay edit host /etc/hosts.ww << 'EOF'
@@ -49,3 +52,4 @@
     EOF
   notify: restart warewulf
   when: update_overlay == true
+  #------------------------------------------------------------------------------------
