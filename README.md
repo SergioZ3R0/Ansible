@@ -20,11 +20,11 @@ This Ansible project is designed to [describe the purpose of the project, e.g., 
 ## Installation
 1. Clone the repository:
     ```bash
-    git clone https://github.com/SergioITB/your-repo.git
+    git clone [https://github.com/SergioITB/your-repo.git](https://github.com/SergioZ3R0/Ansible.git)
     ```
 2. Navigate to the project directory:
     ```bash
-    cd your-repo
+    cd Ansible
     ```
 
 ## Usage
