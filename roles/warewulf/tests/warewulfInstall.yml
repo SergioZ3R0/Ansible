@@ -5,7 +5,6 @@
   vars:
     install_dnf: true
   tasks:
-
   - name: Install Warewulf
     wget:
       url: wget https://github.com/warewulf/warewulf/releases/download/v4.5.6/warewulf-4.5.6-1.el8.x86_64.rpm
@@ -21,7 +20,6 @@
 
   - name: Initialize Warewulf
     tasks:
-
       - name: Move Warewulf data to /install
         command: mv /var/lib/warewulf /install/warewulf
         args:
@@ -100,6 +98,7 @@
 
     - name: Copy configurations to clustershell directory
       command: cp -r /opt/git/warewulf-overlay-clustershell/warewulf /install/warewulf/overlays/
+
     - name: Copy wwclush-helper to system binary directory
       command: cp -p /opt/git/warewulf-overlay-clustershell/rootfs/warewulf/bin/wwclush-helper /usr/bin/
 
@@ -112,6 +111,7 @@
         - name: Verify nodeset output
           debug:
             msg: "{{ nodeset_output.stdout | regex_search('warewulf') }}"
+
 - name: Warewulf images
   hosts: rocky
   become: true
@@ -119,4 +119,83 @@
     - name: Import Rocky 8.x release
       command: wwctl container import --syncuser docker://ghcr.io/warewulf/warewulf-rockylinux:8 rocky-8-hpcnow-base
 
+    - name: Remove original image repo files
+      file:
+        path: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
+        state: absent
+        recurse: yes
 
+    - name: Create yum.repos.d directory
+      file:
+        path: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
+        state: directory
+
+    - name: Copy local repo files from head node
+      copy:
+        src: /etc/yum.repos.d/
+        dest: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
+        mode: '0644'
+        remote_src: yes
+
+    - name: Copy EPEL GPG key to Warewulf image
+      copy:
+        src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+        dest: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+        mode: '0644'
+        remote_src: yes
+
+    - name: Enter the container shell and clean DNF cache
+      shell: |
+        wwctl container shell rocky-8-hpcnow-base <<EOF
+        dnf clean all
+        exit
+        EOF
+
+    - name: Install HPCNow common system packages
+      tasks:
+        - name: Enter the container shell and exclude geoclue package
+          shell: |
+            wwctl container shell rocky-8-hpcnow-base <<EOF
+            dnf install -y vim
+            echo "exclude=geoclue*" >> /etc/dnf/dnf.conf
+            exit
+            EOF
+
+        - name: Install common system packages
+          shell: |
+            wwctl container shell rocky-8-hpcnow-base <<EOF
+            dnf install -y authselect bash-completion bind-utils byobu bzip2 chrony dmidecode emacs git htop iftop iotop iperf3 ipmitool langpacks-en \
+            langpacks-es lldpd lsof mlocate mtr netcat net-tools NetworkManager-tui oddjob-mkhomedir patch python3 sos stress stress-ng sysstat \
+            tar telnet texinfo traceroute tuned vim xorg-x11-fonts-* xorg-x11-utils xorg-x11-xauth wget yum-utils zip
+            systemctl enable lldpd
+            systemctl enable tuned
+            tuned-adm profile latency-performance
+            exit
+            EOF
+
+    - name: Configure timezone and NTP
+      tasks:
+        - name: Set the timezone to Europe/Madrid
+          shell: |
+            wwctl container shell rocky-8-hpcnow-base <<EOF
+            ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
+            exit
+            EOF
+
+        - name: Configure Chrony to point to head nodes
+          shell: |
+            wwctl container shell rocky-8-hpcnow-base <<EOF
+            echo -e "server {{hnodeIP}} iburst >> /etc/chrony.conf
+            systemctl enable chronyd
+            exit
+            EOF
+    - name: Enable root account and configure SSH access, Enter the container shell and configure SSH for root login
+      #Replace <password> with the desired root password.
+      shell: |
+        wwctl container shell rocky-8-hpcnow-base <<EOF
+        sed -i 's/\(PermitRootLogin \).*/\1without-password/' /etc/ssh/sshd_config
+        sed -i 's/!locked//' /etc/shadow
+        dnf install -y passwd
+        echo "root:<password>" | chpasswd
+        exit
+        EOF

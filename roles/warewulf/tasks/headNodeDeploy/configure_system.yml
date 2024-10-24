@@ -1,0 +1,105 @@
+---
+- name: Configurar sistema
+  hosts: rocky
+  become: yes
+  vars:
+    make_hosts: true
+  tasks:
+    - name: Install EPEL release package
+      command: dnf install -y epel-release
+      when: ansible_os_family == "RedHat"
+
+    - name: Enable and start lldpd service
+      systemd:
+        name: lldpd
+        enabled: yes
+        state: started
+      when: ansible_os_family == "RedHat"
+
+    - name: Stop and disable firewalld-libvirtd-nftables services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop:
+        - firewalld
+        - libvirtd
+        - nftables
+      ignore_errors: yes
+
+    - name: Flush all iptables rules
+      command: iptables -F
+
+    - name: Flush all iptables NAT rules
+      command: iptables -t nat -F
+
+    - name: Enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        reload: yes
+
+    - name: Ensure IP forwarding is persistent
+      lineinfile:
+        path: /etc/sysctl.conf
+        regexp: '^net.ipv4.ip_forward'
+        line: 'net.ipv4.ip_forward = 1'
+        state: present
+
+    - name: Apply masquerade rule to iptables
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        out_interface: enp0s3
+        jump: MASQUERADE
+
+    - name: Enable and start iptables service
+      systemd:
+        name: iptables
+        enabled: yes
+        state: started
+      when: ansible_os_family == "RedHat"
+
+    - name: Move existing iptables configuration file
+      command: mv /etc/sysconfig/iptables /etc/sysconfig/iptables.old
+      ignore_errors: yes
+
+    - name: Save current iptables rules
+      command: service iptables save
+      ignore_errors: yes
+
+    - name: Configure Clustershell groups
+      template:
+        src: ../confFiles/local.cfg.j2
+        dest: /etc/clustershell/groups.d/local.cfg
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_os_family == "RedHat"
+
+    - name: Set timezone to Europe/Madrid
+      command: timedatectl set-timezone Europe/Madrid
+
+    - name: Apply chrony configuration template
+      template:
+        src: ../confFiles/chrony.conf.j2
+        dest: /etc/chrony.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable and start chronyd service
+      systemd:
+        name: chronyd
+        enabled: yes
+        state: restarted
+
+    - name: Disable SELinux
+      command: sed -i 's/\(^SELINUX=\).*/\1disabled/g' /etc/selinux/config
+
+    - name: Create directory for OS updates
+      file:
+        path: /install/osupdates/rocky8/x86_64/
+        state: directory
+        mode: '0755'

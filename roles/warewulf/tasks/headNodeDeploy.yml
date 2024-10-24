@@ -1,0 +1,26 @@
+---
+- name: Execute all divided playbooks
+  hosts: rocky
+  become: yes
+  tasks:
+    # This is the order in which the playbooks need to be executed
+    - name: Execute playbook to enable repositories
+      include_tasks: enable_repositories.yml
+
+    - name: Execute playbook for software installation
+      include_tasks: install_software.yml
+
+    - name: Execute playbook for system configuration
+      include_tasks: configure_system.yml
+
+    - name: Execute playbook for repository synchronization
+      include_tasks: sync_repositories.yml
+
+    - name: Execute playbook for Apache configuration
+      include_tasks: configure_apache.yml
+
+    - name: Execute playbook to manage YUM repository files
+      include_tasks: manage_yum_repos.yml
+
+    - name: Execute playbook to manage local YUM repository
+      include_tasks: manage_local_yum_repo.yml
