@@ -98,7 +98,7 @@
 
     - name: Configure Clustershell groups
       template: # Apply the local.cfg.j2 template to the /etc/clustershell/groups.d/local.cfg file
-        src: ./roles/warewulf/confFiles/local.cfg.j2
+        src: ../confFiles/local.cfg.j2
         dest: /etc/clustershell/groups.d/local.cfg
         owner: root
         group: root
@@ -110,7 +110,7 @@
 
     - name: Apply chrony configuration template
       template: # Apply the chrony.conf.j2 template to the /etc/chrony.conf file
-        src: ./roles/warewulf/confFiles/chrony.conf.j2
+        src: ../confFiles/chrony.conf.j2
         dest: /etc/chrony.conf
         owner: root
         group: root
@@ -202,11 +202,12 @@
       block:
         - name: Apply default template to 000-default.conf
           template: # Apply the 000-default.conf.j2 template to the /etc/httpd/conf.d/000-default.conf file
-            src: roles/warewulf/confFiles/000-default.conf.j2
+            src: ../confFiles/000-default.conf.j2
             dest: /etc/httpd/conf.d/000-default.conf
             owner: root
             group: root
             mode: '0644'
+
     - name: Enable and start Apache service
       hosts: rocky
       become: yes
@@ -340,25 +341,25 @@
           repo_name=$(basename $file .repo)
           case $repo_name in
             Rocky-AppStream-local)
-              baseurl="/install/osupdates/rocky8/x86_64/appstream"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/appstream"
               ;;
             Rocky-BaseOS-local)
-              baseurl="/install/osupdates/rocky8/x86_64/baseos"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/baseos"
               ;;
             Rocky-Extras-local)
-              baseurl="/install/osupdates/rocky8/x86_64/extras"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/extras"
               ;;
             Rocky-HighAvailability-local)
-              baseurl="/install/osupdates/rocky8/x86_64/ha"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/ha"
               ;;
             Rocky-PowerTools-local)
-              baseurl="/install/osupdates/rocky8/x86_64/powertools"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/powertools"
               ;;
             epel-local)
-              baseurl="/install/osupdates/rocky8/x86_64/epel"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/epel"
               ;;
             epel-modular-local)
-              baseurl="/install/osupdates/rocky8/x86_64/epel-modular"
+              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/epel-modular"
               ;;
             *)
               baseurl=""
@@ -369,6 +370,3 @@
             sed -i "s|^baseurl=.*$|baseurl=$baseurl|" "$file"
           fi
         done
-      args:
-        executable: /bin/bash
-      when: repo_files.matched > 0

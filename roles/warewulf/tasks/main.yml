@@ -14,7 +14,7 @@
     name: monitoring
   when: monitoring_warewulf == true
 #---------------------------------------------------------------
-#Used on headNodeDeploy.yml
+#Used on headNodeComplete.yml
 - name: "Modify /etc/hosts"
   template:
     src: ../confFiles/hosts.j2

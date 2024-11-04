@@ -37,7 +37,7 @@ Playbooks
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-- [Head Node Deploy](tests/headNodeDeploy.yml)
+- [Head Node Deploy](tests/headNodeComplete.yml)
 
 License
 -------
