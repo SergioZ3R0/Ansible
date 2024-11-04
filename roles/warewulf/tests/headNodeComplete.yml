@@ -208,15 +208,15 @@
             group: root
             mode: '0644'
 
-    - name: Enable and start Apache service
-      hosts: rocky
-      become: yes
-      tasks:
-        - name: Enable httpd service
-          systemd:
-            name: httpd
-            enabled: yes
-            state: started
+- name: Enable and start Apache service
+  hosts: rocky
+  become: yes
+  tasks:
+    - name: Enable httpd service
+      systemd:
+        name: httpd
+        enabled: yes
+        state: started
 
 - name: Manage YUM repository files # Manage YUM repository files on the head node to use the local repository
   hosts: rocky
