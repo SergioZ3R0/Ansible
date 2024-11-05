@@ -31,6 +31,7 @@
   become: yes
   vars:
     make_hosts: true # Create /etc/hosts file
+    update_overlay: true
   tasks:
     - name: Install EPEL release package
       command: dnf install -y epel-release
