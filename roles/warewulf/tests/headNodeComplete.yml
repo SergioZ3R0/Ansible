@@ -223,6 +223,8 @@
 - name: Manage YUM repository files # Manage YUM repository files on the head node to use the local repository
   hosts: rocky
   become: yes
+  vars:
+    sync: true
   tasks:
     - name: Create directory for online repos
       file:
@@ -244,10 +246,13 @@
       loop: "{{ repo_files.files }}" # Loop through the .repo files
       when: repo_files.matched > 0
       ignore_errors: yes
+  when: sync == true
 
 - name: Manage YUM local repository
   hosts: rocky
   become: yes
+  vars:
+    sync: true
   tasks:
     - name: Set REPOSIP variable
       set_fact:
@@ -372,3 +377,4 @@
             sed -i "s|^baseurl=.*$|baseurl=$baseurl|" "$file"
           fi
         done
+  when: sync == true
