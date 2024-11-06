@@ -1,6 +1,6 @@
 ---
 #REMEMBER: To run this playbook you need to do a simbolic link to the roles directory
-#ln -s /root/Ansible/roles/warewulf /root/.ansible/roles/warewulf
+#ln -s /root/Ansible/roles/warewulf /root/.ansible/roles/warewulf.
 - name: Enable repositories
   hosts: rocky
   become: yes
