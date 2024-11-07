@@ -33,6 +33,8 @@
   become: yes
   vars:
     make_hosts: true # Create /etc/hosts file
+  vars_files:
+    - vars/main.yml
   tasks:
     - name: Install EPEL release package
       command: dnf install -y epel-release
@@ -134,8 +136,6 @@
         mode: '0755'
 
     - name: Sync repositories # Sync the AppStream, BaseOS, EPEL, EPEL Modular, Extras, and HA repositories
-      vars_files:
-        - vars/main.yml
       block:
         - name: Sync AppStream repository
           command: dnf reposync -n --repoid=appstream --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
