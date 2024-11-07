@@ -258,6 +258,7 @@
     - name: Set REPOSIP variable
       set_fact:
         repos_ip: "192.168.1.1"  # Use the head node internal network IP address
+      when: sync == true
 
     - name: Remove unnecessary repo files
       file:
@@ -273,6 +274,7 @@
         - Rocky-ResilientStorage.repo
         - Rocky-RT.repo
         - Rocky-Sources.repo
+      when: sync == true
 
     - name: Rename repo files # Rename the repo files to include the -local suffix
       shell: |
@@ -284,6 +286,7 @@
         done
       args:
         executable: /bin/bash
+      when: sync == true
 
     - name: Update repo file names #
       shell: |
@@ -294,6 +297,7 @@
         done
       args:
         executable: /bin/bash
+      when: sync == true
 
     - name: Update repo file descriptions # Update the repo file descriptions to include the - Local suffix
       shell: |
@@ -304,6 +308,7 @@
         done
       args:
         executable: /bin/bash
+      when: sync == true
 
     - name: Comment out mirrorlist and metalink in Rocky repos
       shell: |
@@ -312,6 +317,7 @@
         done
       args:
         executable: /bin/bash
+      when: sync == true
 
     - name: Comment out metalink in EPEL repos
       shell: |
@@ -320,6 +326,7 @@
         done
       args:
         executable: /bin/bash
+      when: sync == true
 
     - name: Backup and restore EPEL GPG key
       block:
@@ -336,12 +343,14 @@
             src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8.bak
             dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
             remote_src: yes
+      when: sync == true
 
     - name: Find all .repo files
       find:
         paths: /etc/yum.repos.d/
         patterns: '*-local.repo'
       register: repo_files
+      when: sync == true
 
     - name: Update baseurl in all local repo files
       shell: |
@@ -378,4 +387,6 @@
             sed -i "s|^baseurl=.*$|baseurl=$baseurl|" "$file"
           fi
         done
-  when: sync == true
+      args:
+        executable: /bin/bash
+      when: sync == true
