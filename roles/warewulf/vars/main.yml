@@ -1,6 +1,7 @@
 ---
 # vars file for warewulf
 update_overlay: false
+sync: true
 #BASIC packages
 basic_packages:
   - iptables*

@@ -134,8 +134,8 @@
         mode: '0755'
 
     - name: Sync repositories # Sync the AppStream, BaseOS, EPEL, EPEL Modular, Extras, and HA repositories
-      vars:
-        sync: true
+      vars_files:
+        - vars/main.yml
       block:
         - name: Sync AppStream repository
           command: dnf reposync -n --repoid=appstream --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
@@ -223,20 +223,22 @@
 - name: Manage YUM repository files # Manage YUM repository files on the head node to use the local repository
   hosts: rocky
   become: yes
-  vars:
-    sync: true
+  vars_files:
+    - vars/main.yml
   tasks:
     - name: Create directory for online repos
       file:
         path: /etc/yum.repos.d/online-repos
         state: directory
         mode: '0755'
+      when: sync == true
 
     - name: Check if any .repo files exist
       find:
         paths: /etc/yum.repos.d/
         patterns: '*.repo'
       register: repo_files
+      when: sync == true
 
     - name: Copy .repo files to online-repos directory
       copy:
@@ -244,15 +246,14 @@
         dest: /etc/yum.repos.d/online-repos/
         mode: '0644'
       loop: "{{ repo_files.files }}" # Loop through the .repo files
-      when: repo_files.matched > 0
+      when: repo_files.matched > 0 and sync == true
       ignore_errors: yes
-  when: sync == true
 
 - name: Manage YUM local repository
   hosts: rocky
   become: yes
-  vars:
-    sync: true
+  vars_files:
+    - vars/main.yml
   tasks:
     - name: Set REPOSIP variable
       set_fact:
