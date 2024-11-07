@@ -225,7 +225,7 @@
   become: yes
   vars:
     sync: true
-  block:
+  tasks:
     - name: Create directory for online repos
       file:
         path: /etc/yum.repos.d/online-repos
@@ -253,7 +253,7 @@
   become: yes
   vars:
     sync: true
-  block:
+  tasks:
     - name: Set REPOSIP variable
       set_fact:
         repos_ip: "192.168.1.1"  # Use the head node internal network IP address
