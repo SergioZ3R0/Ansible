@@ -38,7 +38,7 @@
     sync: true
     make_hosts: true # Create /etc/hosts file
   vars_files:
-    - vars/main.yml
+    - ../vars/main.yml
   tasks:
     - name: Install EPEL release package
       command: dnf install -y epel-release
@@ -230,7 +230,7 @@
   vars:
     sync: true
   vars_files:
-    - vars/main.yml
+    - ../vars/main.yml
   tasks:
     - name: Create directory for online repos
       file:
