@@ -261,7 +261,7 @@
   vars:
     sync: true
   vars_files:
-    - vars/main.yml
+    - ../vars/main.yml
   tasks:
     - name: Set REPOSIP variable
       set_fact:
