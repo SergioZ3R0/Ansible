@@ -13,6 +13,7 @@
       dnf:
         name: /tmp/warewulf-4.5.6-1.el8.x86_64.rpm
         state: present
+        disable_gpg_check: true
 
     - name: Configure Warewulf
       template:
