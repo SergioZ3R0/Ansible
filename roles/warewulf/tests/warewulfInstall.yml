@@ -180,13 +180,13 @@
             exit
             EOF
 
-        - name: Configure Chrony to point to head nodes
-          shell: |
-            wwctl container shell rocky-8-hpcnow-base <<EOF
-            echo -e "server {{hnodeIP}} iburst >> /etc/chrony.conf
-            systemctl enable chronyd
-            exit
-            EOF
+    - name: Configure Chrony to point to head nodes
+      shell: |
+        wwctl container shell rocky-8-hpcnow-base <<'EOF'
+        echo -e "server {{ hnodeIP }} iburst" >> /etc/chrony.conf
+        systemctl enable chronyd
+        exit
+        EOF
 
     - name: Enable root account and configure SSH access
       shell: |
