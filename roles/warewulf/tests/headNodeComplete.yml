@@ -224,7 +224,7 @@
         enabled: yes
         state: started
 
-- name: Manage YUM repository files # Manage YUM repository files on the head node to use the local repository
+- name: Manage YUM repository files # Manage YUM repository files on the head node to use the local repository.
   hosts: rocky
   become: yes
   vars:
