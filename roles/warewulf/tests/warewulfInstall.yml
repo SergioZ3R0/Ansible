@@ -199,3 +199,11 @@
         echo "root:<password>" | chpasswd
         exit
         EOF
+
+    - name: Copy the base OS image to compute and login images
+      tasks:
+        - name: Copy base OS image to compute image
+          command: wwctl container copy rocky-8-hpcnow-base rocky-8-hpcnow-compute
+
+        - name: Copy base OS image to login image
+          command: wwctl container copy rocky-8-hpcnow-base rocky-8-hpcnow-login
