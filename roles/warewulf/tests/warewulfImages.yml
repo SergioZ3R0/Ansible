@@ -16,7 +16,6 @@
       file:
         path: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
         state: absent
-        recurse: yes
 
     - name: Create yum.repos.d directory
       file:
