@@ -1,0 +1,108 @@
+- name: Warewulf images
+  hosts: rocky
+  become: true
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    - name: Import Rocky 8.x release
+      command: wwctl container import --syncuser docker://ghcr.io/warewulf/warewulf-rockylinux:8 rocky-8-hpcnow-base
+      when: warewulf_images == true
+
+    - name: Remove original image repo files
+      file:
+        path: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
+        state: absent
+        recurse: yes
+      when: warewulf_images == true
+
+    - name: Create yum.repos.d directory
+      file:
+        path: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
+        state: directory
+      when: warewulf_images == true
+
+    - name: Copy local repo files from head node
+      copy:
+        src: /etc/yum.repos.d/
+        dest: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
+        mode: '0644'
+        remote_src: yes
+      when: warewulf_images == true
+
+    - name: Copy EPEL GPG key to Warewulf image
+      copy:
+        src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+        dest: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+        mode: '0644'
+        remote_src: yes
+      when: warewulf_images == true
+
+    - name: Enter the container shell and clean DNF cache
+      shell: |
+        wwctl container shell rocky-8-hpcnow-base <<EOF
+        dnf clean all
+        exit
+        EOF
+      when: warewulf_images == true
+
+    - name: Install HPCNow common system packages
+      block:
+        - name: Enter the container shell and exclude geoclue package
+          shell: |
+            wwctl container shell rocky-8-hpcnow-base <<EOF
+            dnf install -y vim
+            echo "exclude=geoclue*" >> /etc/dnf/dnf.conf
+            exit
+            EOF
+
+        - name: Install common system packages
+          shell: |
+            wwctl container shell rocky-8-hpcnow-base <<EOF
+            dnf install -y authselect bash-completion bind-utils byobu bzip2 chrony dmidecode emacs git htop iftop iotop iperf3 ipmitool langpacks-en \
+            langpacks-es lldpd lsof mlocate mtr netcat net-tools NetworkManager-tui oddjob-mkhomedir patch python3 sos stress stress-ng sysstat \
+            tar telnet texinfo traceroute tuned vim xorg-x11-fonts-* xorg-x11-utils xorg-x11-xauth wget yum-utils zip
+            systemctl enable lldpd
+            systemctl enable tuned
+            tuned-adm profile latency-performance
+            exit
+            EOF
+      when: warewulf_images == true
+
+    - name: Configure timezone and NTP
+      block:
+        - name: Set the timezone to Europe/Madrid
+          shell: |
+            wwctl container shell rocky-8-hpcnow-base <<EOF
+            ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
+            exit
+            EOF
+      when: warewulf_images == true
+
+    - name: Configure Chrony to point to head nodes
+      shell: |
+        wwctl container shell rocky-8-hpcnow-base <<'EOF'
+        echo -e "server {{ hnodeIP }} iburst" >> /etc/chrony.conf
+        systemctl enable chronyd
+        exit
+        EOF
+      when: warewulf_images == true
+
+    - name: Enable root account and configure SSH access
+      shell: |
+        wwctl container shell rocky-8-hpcnow-base <<EOF
+        sed -i 's/\(PermitRootLogin \).*/\1without-password/' /etc/ssh/sshd_config
+        sed -i 's/!locked//' /etc/shadow
+        dnf install -y passwd
+        echo "root:<<PASSWORD>>" | chpasswd
+        exit
+        EOF
+      when: warewulf_images == true
+
+    - name: Copy the base OS image to compute and login images
+      block:
+        - name: Copy base OS image to compute image
+          command: wwctl container copy rocky-8-hpcnow-base rocky-8-hpcnow-compute
+
+        - name: Copy base OS image to login image
+          command: wwctl container copy rocky-8-hpcnow-base rocky-8-hpcnow-login
+      when: warewulf_images == true
