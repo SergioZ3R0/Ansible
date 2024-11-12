@@ -125,17 +125,20 @@
   tasks:
     - name: Import Rocky 8.x release
       command: wwctl container import --syncuser docker://ghcr.io/warewulf/warewulf-rockylinux:8 rocky-8-hpcnow-base
+      when: warewulf_images == true
 
     - name: Remove original image repo files
       file:
         path: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
         state: absent
         recurse: yes
+      when: warewulf_images == true
 
     - name: Create yum.repos.d directory
       file:
         path: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
         state: directory
+      when: warewulf_images == true
 
     - name: Copy local repo files from head node
       copy:
@@ -143,6 +146,7 @@
         dest: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/yum.repos.d/
         mode: '0644'
         remote_src: yes
+      when: warewulf_images == true
 
     - name: Copy EPEL GPG key to Warewulf image
       copy:
@@ -150,6 +154,7 @@
         dest: /install/warewulf/chroots/rocky-8-hpcnow-base/rootfs/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
         mode: '0644'
         remote_src: yes
+      when: warewulf_images == true
 
     - name: Enter the container shell and clean DNF cache
       shell: |
@@ -157,6 +162,7 @@
         dnf clean all
         exit
         EOF
+      when: warewulf_images == true
 
     - name: Install HPCNow common system packages
       block:
@@ -179,6 +185,7 @@
             tuned-adm profile latency-performance
             exit
             EOF
+      when: warewulf_images == true
 
     - name: Configure timezone and NTP
       block:
@@ -188,6 +195,7 @@
             ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
             exit
             EOF
+      when: warewulf_images == true
 
     - name: Configure Chrony to point to head nodes
       shell: |
@@ -196,6 +204,7 @@
         systemctl enable chronyd
         exit
         EOF
+      when: warewulf_images == true
 
     - name: Enable root account and configure SSH access
       shell: |
@@ -206,6 +215,7 @@
         echo "root:@HPCnow." | chpasswd
         exit
         EOF
+      when: warewulf_images == true
 
     - name: Copy the base OS image to compute and login images
       block:
@@ -214,4 +224,4 @@
 
         - name: Copy base OS image to login image
           command: wwctl container copy rocky-8-hpcnow-base rocky-8-hpcnow-login
-  when: warewulf_images == true
+      when: warewulf_images == true
