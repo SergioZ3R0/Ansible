@@ -54,7 +54,7 @@
 
     - name: Start Warewulf
       service:
-        name: warewulfd
+        name: warewulfd.service
         state: started
         enabled: true
 
@@ -72,7 +72,7 @@
       lineinfile:
         path: /install/warewulf/overlays/generic/etc/passwd.ww
         state: absent
-        regexp: '{{Include "/etc/passwd"}}'
+        regexp: '\{\{Include "/etc/passwd"\}\}'
 
     - name: Edit group.ww template to remove include line
       lineinfile:
