@@ -3,6 +3,8 @@
   become: true
   vars:
     install_dnf: true
+  vars_files:
+    - ../vars/main.yml
   tasks:
     - name: Download Warewulf RPM
       get_url:
@@ -114,6 +116,8 @@
 - name: Warewulf images
   hosts: rocky
   become: true
+  vars_files:
+    - ../vars/main.yml
   tasks:
     - name: Import Rocky 8.x release
       command: wwctl container import --syncuser docker://ghcr.io/warewulf/warewulf-rockylinux:8 rocky-8-hpcnow-base
