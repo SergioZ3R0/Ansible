@@ -2,6 +2,9 @@
 # vars file for warewulf
 update_overlay: false
 sync: true
+ipaddr: 172.16.1.10
+netmask: 255.255.255.0
+network: 172.16.1.0
 #BASIC packages
 basic_packages:
   - iptables*
