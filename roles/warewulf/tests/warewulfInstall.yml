@@ -102,7 +102,7 @@
             clone: yes
 
         - name: Copy configurations to clustershell directory
-          command: cp -r /opt/git/warewulf-overlay-clustershell/warewulf /install/warewulf/overlays/
+          command: cp -r /opt/git/warewulf-overlay-clustershell/rootfs/warewulf /install/warewulf/overlays/
 
         - name: Copy wwclush-helper to system binary directory
           command: cp -p /opt/git/warewulf-overlay-clustershell/rootfs/warewulf/bin/wwclush-helper /usr/bin/
