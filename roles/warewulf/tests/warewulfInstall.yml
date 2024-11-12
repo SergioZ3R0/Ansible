@@ -78,7 +78,7 @@
       lineinfile:
         path: /install/warewulf/overlays/generic/etc/group.ww
         state: absent
-        regexp: '{{Include "/etc/group"}}'
+        regexp: '\{\{Include "/etc/group"\}\}'
 
     - name: Create config
       command: wwctl configure --all
