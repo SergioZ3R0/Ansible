@@ -82,7 +82,7 @@
 
     - name: Create config
       command: wwctl configure --all
-      notify: restart warewulf
+      notify: restart_warewulf
 
     - name: Clusteshell compatibility
       block:
