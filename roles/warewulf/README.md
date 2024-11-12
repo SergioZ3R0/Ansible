@@ -31,6 +31,8 @@ Configuration Files
 - [chorny.conf.j2](confFiles/chrony.conf.j2)
 - [000-default.conf.j2](confFiles/000-default.conf.j2)
 - [local.cfg.j2](confFiles/local.cfg.j2)
+- [warewulf.conf.j2](confFiles/warewulf.conf.j2)
+- [containerHosts.j2](confFiles/containerHosts.j2)
 
 Playbooks
 ----------------
@@ -38,6 +40,7 @@ Playbooks
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
 - [Head Node Deploy](tests/headNodeComplete.yml)
+- [Warewulf Install and Configure](tests/warewulfInstall.yml)
 
 License
 -------
@@ -47,4 +50,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## SergioZ3R0
