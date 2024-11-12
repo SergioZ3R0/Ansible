@@ -6,6 +6,7 @@ sync: true
 ipaddr: 172.16.1.10
 netmask: 255.255.255.0
 network: 172.16.1.0
+hnodeIP: 172.16.1.10
 #BASIC packages
 basic_packages:
   - iptables*
