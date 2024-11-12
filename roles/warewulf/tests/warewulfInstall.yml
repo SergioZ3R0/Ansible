@@ -214,3 +214,4 @@
 
         - name: Copy base OS image to login image
           command: wwctl container copy rocky-8-hpcnow-base rocky-8-hpcnow-login
+  when: warewulf_images == true
