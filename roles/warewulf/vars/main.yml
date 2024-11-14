@@ -12,6 +12,7 @@ hnodeNameFQDN: warewulf.example.com
 rpaswd: "ExamplePassword"
 dhcpRangeST: 172.16.1.100
 dhcpRangeEN: 172.16.1.255
+
 #BASIC packages
 basic_packages:
   - grub
