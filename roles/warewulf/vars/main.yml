@@ -3,12 +3,13 @@
 update_overlay: false
 warewulf_images: false
 sync: true
-ipaddr: 172.16.1.10
+ipaddr: 172.16.1.1
 netmask: 255.255.255.0
 network: 172.16.1.0
-hnodeIP: 172.16.1.10
+hnodeIP: 172.16.1.1
 #BASIC packages
 basic_packages:
+  - grub
   - iptables*
   - authselect
   - bash-completion
@@ -53,6 +54,7 @@ basic_packages:
   - dnf-utils
   - httpd
 warewulf_packages:
+  - grub
   - basesystem
   - bash
   - chkconfig
