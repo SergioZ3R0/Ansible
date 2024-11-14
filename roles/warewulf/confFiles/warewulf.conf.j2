@@ -13,9 +13,9 @@ warewulf:
   grubboot: false
 dhcp:
   enabled: true
-  template: default
-  range start: 172.16.1.100
-  range end: 172.16.1.255
+  template: static
+  range start: {{ dhcpRangeST }}
+  range end: {{ dhcpRangeEN }}
   systemd name: dhcpd
 tftp:
   enabled: true

@@ -88,7 +88,7 @@
         sed -i 's/\(PermitRootLogin \).*/\1without-password/' /etc/ssh/sshd_config
         sed -i 's/!locked//' /etc/shadow
         dnf install -y passwd
-        echo "root:<<password>>" | chpasswd
+        echo "root:{{rpasswd}}" | chpasswd
         exit
         EOF
 

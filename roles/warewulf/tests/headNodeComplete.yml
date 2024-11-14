@@ -204,8 +204,8 @@
 
     - name: Configure default VirtualHost
       vars:
-        server_name: "192.168.1.1"
-        server_alias: "headnode.hpc.domain"
+        server_name: "{{hnodeIP}}" # Use the head node internal network IP address
+        server_alias: "{{hnodeName}}" # Use the head node hostname
       block:
         - name: Apply default template to 000-default.conf
           template: # Apply the 000-default.conf.j2 template to the /etc/httpd/conf.d/000-default.conf file
@@ -266,7 +266,7 @@
   tasks:
     - name: Set REPOSIP variable
       set_fact:
-        repos_ip: "192.168.1.1"  # Use the head node internal network IP address
+        repos_ip: "{{hnodeIP}}"  # Use the head node internal network IP address
       when: sync == true
 
     - name: Remove unnecessary repo files
@@ -368,25 +368,25 @@
           repo_name=$(basename $file .repo)
           case $repo_name in
             Rocky-AppStream-local)
-              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/appstream"
+              baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/appstream"
               ;;
             Rocky-BaseOS-local)
-              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/baseos"
+              baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/baseos"
               ;;
             Rocky-Extras-local)
-              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/extras"
+              baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/extras"
               ;;
             Rocky-HighAvailability-local)
-              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/ha"
+              baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/ha"
               ;;
             Rocky-PowerTools-local)
-              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/powertools"
+              baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/powertools"
               ;;
             epel-local)
-              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/epel"
+              baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/epel"
               ;;
             epel-modular-local)
-              baseurl="http://192.168.1.1/install/osupdates/rocky8/x86_64/epel-modular"
+              baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/epel-modular"
               ;;
             *)
               baseurl=""
