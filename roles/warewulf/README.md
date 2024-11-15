@@ -14,8 +14,8 @@ Important
 ----------
 #### REMEMBER: To run this playbook you need to do a symbolic link to the roles directory
 
-    -mkdir -p /root/.ansible/roles
-    -ln -s /root/Ansible/roles/warewulf /root/.ansible/roles/warewulf.
+    mkdir -p /root/.ansible/roles
+    ln -s /root/Ansible/roles/warewulf /root/.ansible/roles/warewulf.
 
 Role Variables
 --------------
