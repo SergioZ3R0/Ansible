@@ -3,6 +3,8 @@
   hosts: rocky
   become: yes
   tasks:
+  vars_files:
+    - ../vars/main.yml
     # This is the order in which the playbooks need to be executed
     - name: Execute playbook to enable repositories
       include_tasks: enable_repositories.yml

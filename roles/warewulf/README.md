@@ -10,6 +10,12 @@ Requirements
 - Access to the target hosts with necessary privileges
 - Rocky Linux 8.4 or higher
 
+Important
+----------
+#### REMEMBER: To run this playbook you need to do a symbolic link to the roles directory
+
+    -ln -s /root/Ansible/roles/warewulf /root/.ansible/roles/warewulf.
+
 Role Variables
 --------------
 
