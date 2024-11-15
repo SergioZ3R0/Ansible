@@ -1,4 +1,4 @@
-Role Name
+Warewulf
 =========
 
 This role manages the configuration of Warewulf, including setting up YUM local repositories, configuring hosts, chrony, and Apache virtual hosts.
