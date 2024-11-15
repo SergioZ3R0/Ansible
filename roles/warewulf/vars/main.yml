@@ -2,16 +2,15 @@
 # vars file for warewulf
 update_overlay: false # no usage
 warewulf_images: false # no usage
-sync: true # usage on headNodeComplete.yml line 10
-ipaddr: 172.16.1.1
-netmask: 255.255.255.0
-network: 172.16.1.0
-hnodeIP: 172.16.1.1
-hnodeName: warewulf
-hnodeNameFQDN: warewulf.example.com
-rpaswd: "ExamplePassword"
-dhcpRangeST: 172.16.1.100
-dhcpRangeEN: 172.16.1.255
+sync: true # usage on headNodeComplete.yml on sync repos task line 143 to end of file
+netmask: 255.255.255.0 # usage on warewulf.conf.j2
+network: 172.16.1.0 # usage on warewulf.conf.j2
+hnodeIP: 172.16.1.1 # usage on warewulf.conf.j2, local.cfg.j2, hosts.j2, chrony.conf.j2, headNodeComplete.yml line 207, 269, 365 warewulfimages.yml line 80
+dhcpRangeST: 172.16.1.100 # usage on warewulf.conf.j2
+dhcpRangeEN: 172.16.1.255 # usage on warewulf.conf.j2
+hnodeName: warewulf # usage on hosts.j2, local.cfg.j2, headNodeComplete.yml line 208
+hnodeNameFQDN: warewulf.example.com # usage on hosts.j2, local.cfg.j2
+rpaswd: "ExamplePassword" # usage warewulfimages.yml line 91
 
 #BASIC packages
 basic_packages:
