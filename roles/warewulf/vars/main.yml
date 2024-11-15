@@ -1,8 +1,8 @@
 ---
 # vars file for warewulf
-update_overlay: false
-warewulf_images: false
-sync: true
+update_overlay: false # no usage
+warewulf_images: false # no usage
+sync: true # usage on headNodeComplete.yml line 10
 ipaddr: 172.16.1.1
 netmask: 255.255.255.0
 network: 172.16.1.0
