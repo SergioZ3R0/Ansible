@@ -264,11 +264,6 @@
   vars_files:
     - ../vars/main.yml
   tasks:
-    - name: Set REPOSIP variable
-      set_fact:
-        repos_ip: "{{hnodeIP}}"  # Use the head node internal network IP address
-      when: sync == true
-
     - name: Remove unnecessary repo files
       file:
         path: "/etc/yum.repos.d/{{ item }}" # Remove unnecessary repo files
