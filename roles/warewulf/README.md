@@ -21,7 +21,6 @@ Role Variables
 
 - [vars](vars/main.yml)
 - Playbook Variables:
-- repos_ip: The IP address of the repository server (default: 192.168.1.1).
 - server_name: The server name for the Apache virtual host.
 - server_alias: The server alias for the Apache virtual host.
 
