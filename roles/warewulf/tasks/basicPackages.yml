@@ -10,14 +10,26 @@
   ignore_errors: yes
 
 - name: Aplicar instalación de software
-  make_hosts: true # Create /etc/hosts file
-  monitoring_warewulf: false # Disable monitoring installation
-  install_dnf: true # Install DNF packages
-  dnf_packages: "{{ basic_packages }}" # Install basic packages defined in roles/warewulf/vars/main.yml
-  sync: true
   services:
     - name: lldpd # Enable and start lldpd service
       enabled: true
+
+- name: Instalar paquetes con dnf
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dnf_packages }}"
+  when: ansible_os_family == "RedHat" and install_dnf == true
+  ignore_errors: yes
+
+- name: "Modify /etc/hosts"
+  template:
+    src: ../confFiles/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+  when: make_hosts == true
 
 # Configurar sistema # Configure system settings
 - name: Install EPEL release package

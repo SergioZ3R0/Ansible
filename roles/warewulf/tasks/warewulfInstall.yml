@@ -1,118 +1,107 @@
-- name: Warewulf install & configuration
-  hosts: rocky
-  become: true
-  vars:
-    install_dnf: true
-  vars_files:
-    - ../vars/main.yml
-  tasks:
-    - name: Download Warewulf RPM
-      get_url:
-        url: https://github.com/warewulf/warewulf/releases/download/v4.5.6/warewulf-4.5.6-1.el8.x86_64.rpm
-        dest: /tmp/warewulf-4.5.6-1.el8.x86_64.rpm
+# Warewulf install & configuration
+- name: Download Warewulf RPM
+  get_url:
+    url: https://github.com/warewulf/warewulf/releases/download/v4.5.6/warewulf-4.5.6-1.el8.x86_64.rpm
+    dest: /tmp/warewulf-4.5.6-1.el8.x86_64.rpm
 
-    - name: Install Warewulf
-      dnf:
-        name: /tmp/warewulf-4.5.6-1.el8.x86_64.rpm
-        state: present
-        disable_gpg_check: true
+- name: Install Warewulf
+  dnf:
+    name: /tmp/warewulf-4.5.6-1.el8.x86_64.rpm
+    state: present
+    disable_gpg_check: true
 
-    - name: Configure Warewulf
-      template:
-        src: ../confFiles/warewulf.conf.j2
-        dest: /etc/warewulf/warewulf.conf
+- name: Configure Warewulf
+  template:
+    src: ../confFiles/warewulf.conf.j2
+    dest: /etc/warewulf/warewulf.conf
 
-    - name: Initialize Warewulf
-      block:
-        - name: Move Warewulf data to /install
-          command: mv /var/lib/warewulf /install/warewulf
-          args:
-            creates: /install/warewulf
+- name: Initialize Warewulf
+  block:
+    - name: Move Warewulf data to /install
+      command: mv /var/lib/warewulf /install/warewulf
+      args:
+        creates: /install/warewulf
 
-        - name: Create symbolic link to /install/warewulf
-          file:
-            src: /install/warewulf
-            dest: /var/lib/warewulf
-            state: link
+    - name: Create symbolic link to /install/warewulf
+      file:
+        src: /install/warewulf
+        dest: /var/lib/warewulf
+        state: link
 
-        - name: Generate Warewulf configuration
-          command: wwctl configure --all
-
-        - name: Enable and start Warewulf service
-          systemd:
-            name: warewulfd.service
-            enabled: true
-            state: started
-
-        - name: Check Warewulf server status
-          command: wwctl server status
-          register: warewulf_status
-
-        - name: Display Warewulf server status
-          debug:
-            msg: "{{ warewulf_status.stdout }}"
-
-    - name: Start Warewulf
-      service:
-        name: warewulfd.service
-        state: started
-        enabled: true
-
-    - name: Customizing /etc/hosts with IPMI IPs (only head node)
-      block:
-        - name: Copy the directory
-          command: cp -pr /install/warewulf/overlays/host /install/warewulf/overlays/host-orig
-
-    - name: Edit the hosts overlay with the template
-      block:
-        - name: Build overlay
-          command: wwctl overlay build -H
-
-    - name: Edit passwd.ww template to remove include line
-      lineinfile:
-        path: /install/warewulf/overlays/generic/etc/passwd.ww
-        state: absent
-        regexp: '\{\{Include "/etc/passwd"\}\}'
-
-    - name: Edit group.ww template to remove include line
-      lineinfile:
-        path: /install/warewulf/overlays/generic/etc/group.ww
-        state: absent
-        regexp: '\{\{Include "/etc/group"\}\}'
-
-    - name: Create config
+    - name: Generate Warewulf configuration
       command: wwctl configure --all
 
-    - name: restart_warewulf
-      service:
+    - name: Enable and start Warewulf service
+      systemd:
         name: warewulfd.service
-        state: restarted
+        enabled: true
+        state: started
 
-    - name: Clusteshell compatibility
+    - name: Check Warewulf server status
+      command: wwctl server status
+      register: warewulf_status
+
+    - name: Display Warewulf server status
+      debug:
+        msg: "{{ warewulf_status.stdout }}"
+
+- name: Start Warewulf
+  service:
+    name: warewulfd.service
+    state: started
+    enabled: true
+
+- name: Copy the directory with the templates
+  command: cp -pr /install/warewulf/overlays/host /install/warewulf/overlays/host-orig
+
+- name: Build hosts overlay
+  command: wwctl overlay build -H
+
+- name: Edit passwd.ww template to remove include line
+  lineinfile:
+    path: /install/warewulf/overlays/generic/etc/passwd.ww
+    state: absent
+    regexp: '\{\{Include "/etc/passwd"\}\}'
+
+- name: Edit group.ww template to remove include line
+  lineinfile:
+    path: /install/warewulf/overlays/generic/etc/group.ww
+    state: absent
+    regexp: '\{\{Include "/etc/group"\}\}'
+
+- name: Create config
+  command: wwctl configure --all
+
+- name: restart_warewulf
+  service:
+    name: warewulfd.service
+    state: restarted
+
+- name: Clusteshell compatibility
+  block:
+    - name: Create /opt/git directory if it doesn't exist
+      file:
+        path: /opt/git
+        state: directory
+
+    - name: Clone the repository
+      git:
+        repo: https://github.com/warewulf-overlays/warewulf-overlay-clustershell.git
+        dest: /opt/git/warewulf-overlay-clustershell
+        clone: yes
+
+    - name: Copy configurations to clustershell directory
+      command: cp -r /opt/git/warewulf-overlay-clustershell/rootfs/warewulf /install/warewulf/overlays/
+
+    - name: Copy wwclush-helper to system binary directory
+      command: cp -p /opt/git/warewulf-overlay-clustershell/rootfs/warewulf/bin/wwclush-helper /usr/bin/
+
+    - name: Check that nodeset is working with warewulf
       block:
-        - name: Create /opt/git directory if it doesn't exist
-          file:
-            path: /opt/git
-            state: directory
+        - name: Run nodeset command
+          command: nodeset -L
+          register: nodeset_output
 
-        - name: Clone the repository
-          git:
-            repo: https://github.com/warewulf-overlays/warewulf-overlay-clustershell.git
-            dest: /opt/git/warewulf-overlay-clustershell
-            clone: yes
-
-        - name: Copy configurations to clustershell directory
-          command: cp -r /opt/git/warewulf-overlay-clustershell/rootfs/warewulf /install/warewulf/overlays/
-
-        - name: Copy wwclush-helper to system binary directory
-          command: cp -p /opt/git/warewulf-overlay-clustershell/rootfs/warewulf/bin/wwclush-helper /usr/bin/
-
-        - name: Check that nodeset is working with warewulf
-          block:
-            - name: Run nodeset command
-              command: nodeset -L
-              register: nodeset_output
-
-            - name: Verify nodeset output
-              debug:
-                msg: "{{ nodeset_output.stdout | regex_search('warewulf') }}"
+        - name: Verify nodeset output
+          debug:
+            msg: "{{ nodeset_output.stdout | regex_search('warewulf') }}"

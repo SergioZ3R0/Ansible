@@ -9,11 +9,6 @@
   when: ansible_os_family == "RedHat" and install_dnf == true
   ignore_errors: yes
 #---------------------------------------------------------------
-- name: "Include monitoring role"
-  include_role:
-    name: monitoring
-  when: monitoring_warewulf == true
-#---------------------------------------------------------------
 #Used on headNodeComplete.yml
 - name: "Modify /etc/hosts"
   template:
@@ -24,7 +19,7 @@
     mode: '0644'
   when: make_hosts == true
 #------------------------------------------------------------------
-#Used on warewulfInstall.yml
+#Used no usage
 - name: Edit the overlay with the template
   shell: |
     wwctl overlay edit host /etc/hosts.ww << 'EOF'
