@@ -1,0 +1,52 @@
+- name: Stop and disable firewalld-libvirtd-nftables services
+  systemd:
+    name: "{{ item }}" #
+    state: stopped
+    enabled: no
+  loop: # Loop through the services
+    - firewalld
+    - libvirtd
+    - nftables
+  ignore_errors: yes
+
+- name: Flush all iptables rules
+  command: iptables -F
+
+- name: Flush all iptables NAT rules
+  command: iptables -t nat -F
+
+- name: Enable IP forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+    reload: yes
+
+- name: Ensure IP forwarding is persistent
+  lineinfile: # Add a line to the /etc/sysctl.conf file
+    path: /etc/sysctl.conf
+    regexp: '^net.ipv4.ip_forward'
+    line: 'net.ipv4.ip_forward = 1'
+    state: present
+
+- name: Apply masquerade rule to iptables
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: enp0s3
+    jump: MASQUERADE
+
+- name: Enable and start iptables service
+  systemd:
+    name: iptables
+    enabled: yes
+    state: started
+  when: ansible_os_family == "RedHat"
+
+- name: Move existing iptables configuration file
+  command: mv /etc/sysconfig/iptables /etc/sysconfig/iptables.old
+  ignore_errors: yes
+
+- name: Save current iptables rules
+  command: service iptables save
+  ignore_errors: yes

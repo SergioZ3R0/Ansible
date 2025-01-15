@@ -1,28 +1,14 @@
----
-- name: Execute all divided playbooks
-  hosts: rocky
-  become: yes
-  tasks:
+#IMPORTANT: Allways use this order of execution
+- hosts: localhost
+  remote_user: root
   vars_files:
     - ../vars/main.yml
-    # This is the order in which the playbooks need to be executed
-    - name: Execute playbook to enable repositories
-      include_tasks: enable_repositories.yml
-
-    - name: Execute playbook for software installation
-      include_tasks: install_software.yml
-
-    - name: Execute playbook for system configuration
-      include_tasks: configure_system.yml
-
-    - name: Execute playbook for repository synchronization
-      include_tasks: sync_repositories.yml
-
-    - name: Execute playbook for Apache configuration
-      include_tasks: configure_apache.yml
-
-    - name: Execute playbook to manage YUM repository files
-      include_tasks: manage_yum_repos.yml
-
-    - name: Execute playbook to manage local YUM repository
-      include_tasks: manage_local_yum_repo.yml
+  tasks:
+    - include_tasks: ../tasks/basicPackages.yml
+    - include_tasks: ../tasks/iptables.yml
+    - include_tasks: ../tasks/clustershellTimeZone.yml
+    - include_tasks: ../tasks/httpd.yml
+    - include_tasks: ../tasks/syncRepos.yml
+    - include_tasks: ../tasks/manageYumRepos.yml
+    - include_tasks: ../tasks/warewulfInstall.yml
+    - include_tasks: ../tasks/warewulfImages.yml

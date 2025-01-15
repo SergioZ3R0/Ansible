@@ -1,0 +1,156 @@
+# Manage YUM repository files on the head node to use the local repository.
+- name: Create directory for online repos
+  file:
+    path: /etc/yum.repos.d/online-repos
+    state: directory
+    mode: '0755'
+  when: sync == true
+
+- name: Check if any .repo files exist
+  find:
+    paths: /etc/yum.repos.d/
+    patterns: '*.repo'
+  register: repo_files
+  when: sync == true
+
+- name: Copy .repo files to online-repos directory
+  copy:
+    src: "{{ item.path }}" # Copy the .repo files to the /etc/yum.repos.d/online-repos/ directory
+    dest: /etc/yum.repos.d/online-repos/
+    mode: '0644'
+  loop: "{{ repo_files.files }}" # Loop through the .repo files
+  when: repo_files.matched > 0 and sync == true
+  ignore_errors: yes
+
+# Manage YUM local repository
+- name: Remove unnecessary repo files
+  file:
+    path: "/etc/yum.repos.d/{{ item }}" # Remove unnecessary repo files
+    state: absent
+  loop:
+    - epel-testing*.repo
+    - Rocky-Debuginfo.repo
+    - Rocky-Devel.repo
+    - Rocky-Media.repo
+    - Rocky-NFV.repo
+    - Rocky-Plus.repo
+    - Rocky-ResilientStorage.repo
+    - Rocky-RT.repo
+    - Rocky-Sources.repo
+  when: sync == true
+
+- name: Rename repo files # Rename the repo files to include the -local suffix
+  shell: |
+    for i in $(ls /etc/yum.repos.d/*.repo); do
+      base=$(basename $i .repo)
+      if [[ $base != *-local ]]; then
+        mv /etc/yum.repos.d/$base.repo /etc/yum.repos.d/$base-local.repo
+      fi
+    done
+  args:
+    executable: /bin/bash
+  when: sync == true
+
+- name: Update repo file names #
+  shell: |
+    for file in /etc/yum.repos.d/*.repo; do
+      if ! grep -q '\-local\]' "$file"; then
+        sed -i 's/\]/-local\]/' "$file"
+      fi
+    done
+  args:
+    executable: /bin/bash
+  when: sync == true
+
+- name: Update repo file descriptions # Update the repo file descriptions to include the - Local suffix
+  shell: |
+    for file in /etc/yum.repos.d/*.repo; do
+      if ! grep -q ' - Local' "$file"; then
+        sed -i '/name/s/$/ - Local/' "$file"
+      fi
+    done
+  args:
+    executable: /bin/bash
+  when: sync == true
+
+- name: Comment out mirrorlist and metalink in Rocky repos
+  shell: |
+    for file in /etc/yum.repos.d/Rocky*.repo; do
+      sed -i '/mirrorlist=/s/^/#/' "$file"
+    done
+  args:
+    executable: /bin/bash
+  when: sync == true
+
+- name: Comment out metalink in EPEL repos
+  shell: |
+    for file in /etc/yum.repos.d/epel*.repo; do
+      sed -i '/metalink=/s/^/#/' "$file"
+    done
+  args:
+    executable: /bin/bash
+  when: sync == true
+
+- name: Backup and restore EPEL GPG key
+  block:
+    - name: Backup EPEL GPG key
+      copy:
+        src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+        dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8.bak
+        remote_src: yes
+
+    - name: Remove EPEL release
+      command: dnf remove -y epel-release
+
+    - name: Restore EPEL GPG key
+      copy:
+        src: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8.bak
+        dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+        remote_src: yes
+  when: sync == true
+
+- name: Find all .repo files
+  find:
+    paths: /etc/yum.repos.d/
+    patterns: '*-local.repo'
+  register: repo_files
+  when: sync == true
+
+- name: Update baseurl in all local repo files
+  shell: |
+    for file in /etc/yum.repos.d/*-local.repo; do
+      repo_name=$(basename $file .repo)
+      case $repo_name in
+        Rocky-AppStream-local)
+          baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/appstream"
+          ;;
+        Rocky-BaseOS-local)
+          baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/baseos"
+          ;;
+        Rocky-Extras-local)
+          baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/extras"
+          ;;
+        Rocky-HighAvailability-local)
+          baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/ha"
+          ;;
+        Rocky-PowerTools-local)
+          baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/powertools"
+          ;;
+        epel-local)
+          baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/epel"
+          ;;
+        epel-modular-local)
+          baseurl="http://{{hnodeIP}}/install/osupdates/rocky8/x86_64/epel-modular"
+          ;;
+        *)
+          baseurl=""
+          ;;
+      esac
+      if [ -n "$baseurl" ]; then
+        sed -i "s|^#baseurl=.*$|baseurl=$baseurl|" "$file"
+        sed -i "s|^baseurl=.*$|baseurl=$baseurl|" "$file"
+      fi
+    done
+  args:
+    executable: /bin/bash
+  when: sync == true

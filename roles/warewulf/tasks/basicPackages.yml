@@ -1,0 +1,32 @@
+# Enable repositories
+- name: Enable EPEL repository
+  command: dnf install -y epel-release
+  when: ansible_os_family == "RedHat"
+  ignore_errors: yes
+
+- name: Enable powertools repository
+  command: dnf config-manager --set-enabled powertools
+  when: ansible_os_family == "RedHat"
+  ignore_errors: yes
+
+- name: Aplicar instalación de software
+  make_hosts: true # Create /etc/hosts file
+  monitoring_warewulf: false # Disable monitoring installation
+  install_dnf: true # Install DNF packages
+  dnf_packages: "{{ basic_packages }}" # Install basic packages defined in roles/warewulf/vars/main.yml
+  sync: true
+  services:
+    - name: lldpd # Enable and start lldpd service
+      enabled: true
+
+# Configurar sistema # Configure system settings
+- name: Install EPEL release package
+  command: dnf install -y epel-release
+  when: ansible_os_family == "RedHat"
+
+- name: Enable and start lldpd service
+  systemd:
+    name: lldpd
+    enabled: yes
+    state: started
+  when: ansible_os_family == "RedHat"

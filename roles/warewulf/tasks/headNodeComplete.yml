@@ -1,4 +1,5 @@
 ---
+#IMPORTANT: Only use this playbook if you dont want to doit scalonately, if you want to doit scalonately use the playbook ../test/headNodeDeploy.yml
 #REMEMBER: To run this playbook you need to do a symbolic link to the roles directory
 #ln -s /root/Ansible/roles/warewulf /root/.ansible/roles/warewulf.
 - name: Enable repositories

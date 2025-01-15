@@ -1,0 +1,28 @@
+- name: Configure Clustershell groups
+  template: # Apply the local.cfg.j2 template to the /etc/clustershell/groups.d/local.cfg file
+    src: ../confFiles/local.cfg.j2
+    dest: /etc/clustershell/groups.d/local.cfg
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == "RedHat"
+
+- name: Set timezone to Europe/Madrid
+  command: timedatectl set-timezone Europe/Madrid
+
+- name: Apply chrony configuration template
+  template: # Apply the chrony.conf.j2 template to the /etc/chrony.conf file
+    src: ../confFiles/chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable and start chronyd service
+  systemd:
+    name: chronyd
+    enabled: yes
+    state: restarted
+
+- name: Disable SELinux
+  command: sed -i 's/\(^SELINUX=\).*/\1disabled/g' /etc/selinux/config

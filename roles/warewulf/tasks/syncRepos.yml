@@ -1,0 +1,47 @@
+- name: Create directory for OS updates
+  file: # Create the /install/osupdates/rocky8/x86_64/ directory
+    path: /install/osupdates/rocky8/x86_64/
+    state: directory
+    mode: '0755'
+
+- name: Sync repositories # Sync the AppStream, BaseOS, EPEL, EPEL Modular, Extras, and HA repositories
+  block:
+    - name: Sync AppStream repository
+      command: dnf reposync -n --repoid=appstream --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync BaseOS repository
+      command: dnf reposync -n --repoid=baseos --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync EPEL repository
+      command: dnf reposync -n --repoid=epel --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync EPEL Modular repository
+      command: dnf reposync -n --repoid=epel-modular --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync Extras repository
+      command: dnf reposync -n --repoid=extras --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Sync HA repository
+      command: dnf reposync -n --repoid=ha --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck
+
+    - name: Enable PowerTools repository
+      command: dnf config-manager --set-enabled powertools
+      when: ansible_os_family == "RedHat"
+
+    - name: Sync PowerTools repository
+      command: dnf reposync -n --repoid=powertools --download-path=/install/osupdates/rocky8/x86_64 --downloadcomps --download-metadata --gpgcheck -v
+      when: ansible_os_family == "RedHat"
+
+    - name: Check if highavailability directory exists
+      stat: # Check if the /install/osupdates/rocky8/x86_64/highavailability directory exists
+        path: /install/osupdates/rocky8/x86_64/highavailability
+      register: highavailability_dir
+
+    - name: Remove existing highavailability directory
+      command: rm -rf /install/osupdates/rocky8/x86_64/highavailability
+      when: highavailability_dir.stat.exists
+
+    - name: Rename HA directory to highavailability
+      command: mv /install/osupdates/rocky8/x86_64/ha /install/osupdates/rocky8/x86_64/highavailability
+      when: highavailability_dir.stat.exists == false
+  when: sync == true
