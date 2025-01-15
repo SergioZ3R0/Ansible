@@ -14,7 +14,7 @@
     - name: Enable powertools repository
       command: dnf config-manager --set-enabled powertools
       when: ansible_os_family == "RedHat"
-  ignore_errors: yesS
+  ignore_errors: yes
 
 - name: Aplicar instalación de software
   hosts: rocky

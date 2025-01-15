@@ -45,8 +45,8 @@ Playbooks
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-- [Head Node Deploy](tests/headNodeComplete.yml)
-- [Warewulf Install and Configure](tests/warewulfInstall.yml)
+- [Head Node Deploy](tasks/headNodeComplete.yml)
+- [Warewulf Install and Configure](tasks/warewulfInstall.yml)
 
 License
 -------

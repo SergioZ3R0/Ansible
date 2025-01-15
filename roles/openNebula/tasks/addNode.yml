@@ -1,0 +1,58 @@
+- name: Enable EPEL repository
+  command: dnf install -y epel-release
+
+- name: Enable powertools repository
+  command: dnf config-manager --set-enabled powertools
+
+- name: Copy opennebula.repo template to /etc/yum.repos.d/
+  template:
+      src: ../templates/opennebula.repo.j2
+      dest: /etc/yum.repos.d/opennebula.repo
+      owner: root
+      group: root
+      mode: '0644'
+
+- name: Update the system cache
+  command: dnf makecache -y
+
+- name: Install opennebula package
+  dnf:
+      name: opennebula-node-kvm
+      state: present
+
+- name: Install base packages with dnf
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ base_packages }}"
+
+- name: Enable lldpd service
+  systemd:
+      name: lldpd
+      enabled: yes
+      state: started
+
+- name: Restart libvirtd service
+  systemd:
+      name: libvirtd
+      state: restarted
+      enabled: yes
+
+- name: Remove libvirt default network
+  command: virsh net-destroy default
+  ignore_errors: yes
+
+- name: Disable SELinux
+  command: sed -i 's/\(^SELINUX=\).*/\1disabled/g' /etc/selinux/config
+
+- name: Disable firewalld
+  systemd:
+      name: firewalld
+      state: stopped
+      enabled: no
+
+- name: Reboot the system
+  command: reboot
+  async: 1
+  poll: 0
+  ignore_errors: yes
