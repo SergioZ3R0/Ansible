@@ -1,0 +1,26 @@
+- name: Instalar Prometheus Node Exporter
+  apt:
+    name: prometheus-node-exporter
+    state: present
+  become: yes
+
+- name: Configurar Prometheus para monitorear OpenNebula
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+  notify: Restart Prometheus
+  become: yes
+
+- name: Configurar alertas en Prometheus
+  template:
+    src: alert.rules.j2
+    dest: /etc/prometheus/alert.rules
+  notify: Restart Prometheus
+  become: yes
+
+- name: Configurar Grafana para visualizar métricas de OpenNebula
+  template:
+    src: grafana_dashboard.json.j2
+    dest: /etc/grafana/provisioning/dashboards/opennebula_dashboard.json
+  notify: Restart Grafana
+  become: yes

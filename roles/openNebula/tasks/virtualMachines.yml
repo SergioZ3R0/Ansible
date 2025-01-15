@@ -1,0 +1,9 @@
+- name: Crear una plantilla de máquina virtual
+  command: onevm create "{{ opennebula_vm_template }}"
+  become: yes
+  when: opennebula_vm_template is defined
+
+- name: Desplegar una máquina virtual
+  command: onevm deploy "{{ opennebula_vm_id }}"
+  become: yes
+  when: opennebula_vm_id is defined

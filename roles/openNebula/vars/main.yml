@@ -6,3 +6,8 @@ opennebula_vnet_template: ''
 opennebula_datastore_template: ''
 opennebula_cpu: ''
 opennebula_memory: ''
+#-------------------------vm-template-----------------------------------
+DESCRIPTION: CentOS 7 # Description of the VM Template
+MEMORY: 4096 # Memory in MB
+FIRMWARE: bios # BIOS or UEFI
+VCPU: 2 # Number of virtual CPUs

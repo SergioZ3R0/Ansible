@@ -1,0 +1,16 @@
+- name: Copy datastore configuration file
+  template:
+    src: ../templates/imageDatastore.j2
+    dest: /tmp/image_datastore.conf
+    owner: oneadmin
+    group: oneadmin
+    mode: '0644'
+
+- name: Create datastore for images
+  command: "onedatastore create /tmp/image_datastore.conf"
+
+- name: Delete default datastores
+  command: "onedatastore delete {{ item }}"
+  loop:
+    - system
+    - default

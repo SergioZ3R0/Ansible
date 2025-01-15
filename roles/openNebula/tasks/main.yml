@@ -1,15 +1,6 @@
 ---
 # tasks file for openNebula
 
-- name: Crear una plantilla de máquina virtual
-  command: onevm create "{{ opennebula_vm_template }}"
-  become: yes
-  when: opennebula_vm_template is defined
-
-- name: Desplegar una máquina virtual
-  command: onevm deploy "{{ opennebula_vm_id }}"
-  become: yes
-  when: opennebula_vm_id is defined
 
 - name: Crear una red virtual
   command: onevnet create "{{ opennebula_vnet_template }}"
@@ -23,32 +14,7 @@
 
 # tasks file for openNebula_monitoring
 
-- name: Instalar Prometheus Node Exporter
-  apt:
-    name: prometheus-node-exporter
-    state: present
-  become: yes
 
-- name: Configurar Prometheus para monitorear OpenNebula
-  template:
-    src: prometheus.yml.j2
-    dest: /etc/prometheus/prometheus.yml
-  notify: Restart Prometheus
-  become: yes
-
-- name: Configurar alertas en Prometheus
-  template:
-    src: alert.rules.j2
-    dest: /etc/prometheus/alert.rules
-  notify: Restart Prometheus
-  become: yes
-
-- name: Configurar Grafana para visualizar métricas de OpenNebula
-  template:
-    src: grafana_dashboard.json.j2
-    dest: /etc/grafana/provisioning/dashboards/opennebula_dashboard.json
-  notify: Restart Grafana
-  become: yes
 
 - name: Configurar escalabilidad automática
   command: onevm resize "{{ opennebula_vm_id }}" --cpu "{{ opennebula_cpu }}" --memory "{{ opennebula_memory }}"
