@@ -1,4 +1,4 @@
-#nmcli cofigure interface
+#nmcli cofigure interface.
 - name: configure interface with nmcli
   nmcli:
     conn_name: "{{ item.conn_name }}"

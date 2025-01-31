@@ -1,6 +1,6 @@
 # **Ansible Role: Network Configuration**
 
-This role manages network interfaces, VLANs, and bridges on Linux-based systems using `nmcli`.
+This role manages network interfaces, VLANs, and bridges on Linux-based systems using `nmcli`
 
 ---
 
