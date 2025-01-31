@@ -1,0 +1,16 @@
+---
+# vars file for networkM
+item.conn_name: enp0s3
+item.type: ethernet
+item.ifname : enp0s3
+item.ip4: 192.168.1.10
+item.gw4: 192.168.1.1
+item.state: present
+
+#vlans
+item.vlan_id: 10
+parent_ifname: enp0s3
+#bridge
+item.bridge_conn_name: enp0s3
+item.bridge_ifname: enp0s3
+

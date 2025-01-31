@@ -1,0 +1,12 @@
+#nmcli cofigure interface
+- name: configure interface with nmcli
+  nmcli:
+    conn_name: "{{ item.conn_name }}"
+    type: "{{ item.type }}"
+    ifname: "{{ item.ifname }}"
+    ip4: "{{ item.ip4 }}"
+    gw4: "{{ item.gw4 | default(omit) }}"
+    dns4: "{{ item.dns4 | default(omit) }}"
+    dns4_search: "{{ item.dns4_search | default(omit) }}"
+    method4: "{{ item.method4 }}"
+    state: "{{ item.state }}"

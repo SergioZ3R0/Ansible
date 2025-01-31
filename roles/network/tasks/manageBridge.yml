@@ -1,0 +1,21 @@
+# roles/networkDebian/tasks/manageBridge.yml
+
+- name: Create bridge interface
+  nmcli:
+    conn_name: "{{ item.conn_name }}"
+    type: bridge
+    ifname: "{{ item.ifname }}"
+    ip4: "{{ item.ip4 }}"
+    gw4: "{{ item.gw4 | default(omit) }}"
+    dns4: "{{ item.dns4 | default(omit) }}"
+    dns4_search: "{{ item.dns4_search | default(omit) }}"
+    method4: "{{ item.method4 }}"
+    state: "{{ item.state }}"
+
+- name: Add interface to bridge
+  nmcli:
+    conn_name: "{{ item.bridge_ifname }}"
+    slave.type: bridge
+    ifname: "{{ item.bridge_ifname }}"
+    master: "{{ item.conn_name }}"
+    state: "{{ item.state }}"

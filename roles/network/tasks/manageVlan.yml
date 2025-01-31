@@ -1,0 +1,16 @@
+# roles/networkDebian/tasks/manageVlan.yml
+
+- name: Create VLAN interface
+  nmcli:
+    conn_name: "{{ item.conn_name }}"
+    type: vlan
+    ifname: "{{ item.ifname }}"
+    vlanid: "{{ item.vlan_id }}"
+    vlandev: "{{ item.parent_ifname }}"
+    ip4: "{{ item.ip4 }}"
+    gw4: "{{ item.gw4 | default(omit) }}"
+    dns4: "{{ item.dns4 | default(omit) }}"
+    dns4_search: "{{ item.dns4_search | default(omit) }}"
+    method4: "{{ item.method4 }}"
+    state: "{{ item.state }}"
+    autoconnect: yes

@@ -1,0 +1,64 @@
+- name: Test if Network Manager is installed
+  command: dpkg -l network-manager
+  register: networkManager
+  ignore_errors: yes
+
+- name: Install Network Manager
+  apt:
+    name: network-manager
+    state: present
+  when: networkManager.rc != 0
+
+- name: Find the Netplan configuration file
+  find:
+    paths: /etc/netplan
+    patterns: "*.yaml"
+  register: netplan_files
+
+- name: Debug found Netplan files
+  debug:
+    var: netplan_files
+
+- name: Set the Netplan user configuration file
+  set_fact:
+    user_netplan_file: "{{ netplan_files.files[0].path }}"
+  when: netplan_files.matched > 0
+
+- name: Debug user Netplan file
+  debug:
+    var: user_netplan_file
+
+- name: Make a backup of the Netplan user configuration file
+  command: cp "{{ user_netplan_file }}" "{{ user_netplan_file }}.bak"
+  when: user_netplan_file is defined
+
+- name: Delete the Netplan user configuration content
+  command: echo "" > "{{ user_netplan_file }}"
+  when: user_netplan_file is defined
+
+- name: Overwrite the Netplan user configuration file
+  copy:
+    dest: "{{ user_netplan_file }}"
+    content: |
+      network:
+        version: 2
+        renderer: NetworkManager
+  when: user_netplan_file is defined
+
+- name: Apply Netplan configuration
+  command: netplan apply
+  when: user_netplan_file is defined
+
+- name: Set the NetworkManager configuration file management true
+  command: sed -i 's/managed=false/managed=true/' /etc/NetworkManager/NetworkManager.conf
+  when: networkManager.rc == 0
+
+- name: Restart NetworkManager
+  service:
+    name: NetworkManager
+    state: restarted
+    enabled: yes
+
+- name: Final message
+  debug:
+      msg: "Network Manager is installed and configured REBOOT the system when possible"

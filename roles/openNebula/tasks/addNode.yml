@@ -2,7 +2,7 @@
   command: dnf install -y epel-release
 
 - name: Enable powertools repository
-  command: dnf config-manager --set-enabled powertools
+  command: dnf config-manager --set-enabled crb
 
 - name: Copy opennebula.repo template to /etc/yum.repos.d/
   template:

@@ -1,0 +1,49 @@
+---
+# tasks file for networkM
+- hosts: localhost
+  remote_user: root
+  tasks:
+    - include_tasks: manageInterface.yml
+      vars:
+        item:
+          conn_name: enp0s3
+          type: ethernet
+          ifname: enp0s3
+          ip4: 192.168.1.10
+          gw4: 192.168.1.1
+          state: present
+
+    - include_tasks: manageInterface.yml
+      vars:
+        item:
+          conn_name: enp0s8
+          type: ethernet
+          ifname: enp0s8
+          ip4: 192.168.1.10
+          gw4: 192.168.1.1
+          state: present
+
+    - include_tasks: manageVlan.yml
+      vars:
+        item:
+          conn_name: vlan10
+          ifname: enp0s3.10
+          vlan_id: 10
+          parent_ifname: enp0s3
+          ip4: 192.168.10.10
+          gw4: 192.168.10.1
+          state: present
+
+    - include_tasks: manageBridge.yml
+      vars:
+        item:
+          conn_name: br0
+          ifname: br0
+          ip4: 192.168.20.10
+          gw4: 192.168.20.1
+          dns4: 8.8.8.8
+          dns4_search: example.com
+          method4: auto  # Usa 'auto' para DHCP o 'manual' para IP estática
+          state: present
+          bridge_conn_name: enp0s3
+          bridge_ifname: enp0s3
