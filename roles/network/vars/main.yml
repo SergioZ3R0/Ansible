@@ -1,5 +1,5 @@
 ---
-# vars file for network
+# vars file for network.
 item.conn_name: enp0s3
 item.type: ethernet
 item.ifname : enp0s3

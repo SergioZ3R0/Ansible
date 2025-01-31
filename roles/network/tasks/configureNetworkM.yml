@@ -1,4 +1,4 @@
-- name: Test if Network Manager is installed
+- name: Test if Network Manager is installed.
   command: dpkg -l network-manager
   register: networkManager
   ignore_errors: yes

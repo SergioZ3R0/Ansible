@@ -18,7 +18,7 @@ This role manages network interfaces, VLANs, and bridges on Linux-based systems 
 
 ## **Author Information**
 
-- **Author:** Sergio Cabello (*scabello*)  
+- **Author:** Sergio (*SergioZ3R0*)  
 - **Contact:** For any questions or concerns, feel free to reach out.
 
 ---

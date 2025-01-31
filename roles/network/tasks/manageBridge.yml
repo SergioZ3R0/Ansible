@@ -1,4 +1,4 @@
-# roles/networkDebian/tasks/manageBridge.yml.
+# roles/networkDebian/tasks/manageBridge.yml
 
 - name: Create bridge interface
   nmcli:

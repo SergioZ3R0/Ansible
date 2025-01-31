@@ -1,5 +1,5 @@
 ---
-# tasks file for network
+# tasks file for network.
 - hosts: localhost
   remote_user: root
   tasks:
